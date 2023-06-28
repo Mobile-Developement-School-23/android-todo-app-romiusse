@@ -6,4 +6,10 @@
     <string name="important">Важность</string>
     <string name="deadline">Сделать до</string>
     <string name="delete">УДАЛИТЬ</string>
+    <string name="null_text">Заметка пустая</string>
+    <string-array name="priority">
+        <item>Низкий</item>
+        <item>Нет</item>
+        <item>Высокий</item>
+    </string-array>
 </resources>

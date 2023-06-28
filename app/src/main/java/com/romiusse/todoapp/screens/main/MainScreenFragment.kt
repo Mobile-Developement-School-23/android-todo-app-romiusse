@@ -1,12 +1,25 @@
 package com.romiusse.todoapp.screens.main
 
+import android.annotation.SuppressLint
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.romiusse.todoapp.App
 import com.romiusse.todoapp.R
+import com.romiusse.todoapp.adaptor.Adapter
+import com.romiusse.todoapp.databinding.FragmentMainScreenBinding
+import com.romiusse.todoapp.todo_list.TodoItemsRepository
+import com.romiusse.todoapp.todo_list.ToDoItemListener
+import com.romiusse.todoapp.utils.factory
 
 class MainScreenFragment : Fragment() {
 
@@ -14,19 +27,60 @@ class MainScreenFragment : Fragment() {
         fun newInstance() = MainScreenFragment()
     }
 
-    private lateinit var viewModel: MainScreenViewModel
+    private lateinit var binding: FragmentMainScreenBinding
+    private lateinit var adapter: Adapter
+
+    private val viewModel: MainScreenViewModel by viewModels { factory() }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_main_screen, container, false)
+        binding = FragmentMainScreenBinding.inflate(layoutInflater, container, false)
+        return binding.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this)[MainScreenViewModel::class.java]
-        // TODO: Use the ViewModel
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        initAdapter()
+        initRecyclerView()
+        initAddButton()
+
+        viewModel.items.observe(viewLifecycleOwner, Observer {
+            adapter.items = it
+        })
+
+
     }
+
+    private fun initAddButton() {
+        binding.addButton.setOnClickListener {
+            findNavController().navigate(
+                R.id.action_mainScreenFragment_to_addScreenFragment
+            )
+        }
+    }
+
+    private fun initAdapter() {
+        adapter = Adapter()
+        adapter.setCheckBoxListener { viewModel.updateFromList(it) }
+        adapter.setItemTouchListener {
+            val bundle = bundleOf("id" to it.id)
+            findNavController().navigate(
+                R.id.action_mainScreenFragment_to_addScreenFragment,
+                bundle
+            )
+        }
+    }
+
+    private fun initRecyclerView() {
+        binding.apply {
+
+            recyclerview.layoutManager = GridLayoutManager(activity, 1)
+            recyclerview.adapter = adapter
+        }
+    }
+
 
 }

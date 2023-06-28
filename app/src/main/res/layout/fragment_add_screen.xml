@@ -99,7 +99,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/pudding_large"
-                    android:background="@null"/>
+                    android:background="@null"
+                    android:entries="@array/priority"/>
 
                 <View
                     android:layout_width="match_parent"
@@ -109,7 +110,7 @@
                     android:background="?android:attr/listDivider"/>
 
                 <androidx.appcompat.widget.SwitchCompat
-                    android:id="@+id/switchdeatline"
+                    android:id="@+id/switchdeadline"
                     style="@style/TextAppearance.Body"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
