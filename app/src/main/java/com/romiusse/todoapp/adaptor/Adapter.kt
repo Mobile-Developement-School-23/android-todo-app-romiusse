@@ -61,6 +61,7 @@ class Adapter: RecyclerView.Adapter<ViewHolder>() {
             holder.checkBoxItem.isChecked = true
             holder.textItem.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
         } else{
+            holder.checkBoxItem.isChecked = false
             holder.textItem.paintFlags = Paint.ANTI_ALIAS_FLAG
         }
 

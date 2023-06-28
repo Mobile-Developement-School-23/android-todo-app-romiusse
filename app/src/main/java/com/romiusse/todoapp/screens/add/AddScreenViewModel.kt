@@ -3,10 +3,15 @@ package com.romiusse.todoapp.screens.add
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.romiusse.todoapp.todo_list.PriorityItem
 import com.romiusse.todoapp.todo_list.TodoItem
 import com.romiusse.todoapp.todo_list.TodoItemsRepository
 import com.romiusse.todoapp.utils.Utils
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.Date
 import kotlin.math.max
 
@@ -17,7 +22,6 @@ class AddScreenViewModel(
 
     private val _item = MutableLiveData<TodoItem>()
     val item: LiveData<TodoItem> = _item
-
 
     var isNew = true
 
@@ -31,26 +35,46 @@ class AddScreenViewModel(
         changedAt = Date()
     )
 
+    private fun setItemFromListById(id: String){
+        viewModelScope.launch {
+
+            val item = withContext(Dispatchers.IO) {
+                return@withContext todoItemsRepository.getItemFromListById(id)
+            }
+            if (item != null) _item.value = item!!
+            else _item.value = createNewItem()
+        }
+    }
+
     fun loadItem(id: String="", new: Boolean=false){
         if(!isNew) return
 
         if(!new)
-            _item.value = todoItemsRepository.getItemFromListById(id)
-        else
+            setItemFromListById(id)
+        else {
             _item.value = createNewItem()
-        isNew = false
+        }
     }
 
     fun createItem(item: TodoItem?){
-        item?.let { todoItemsRepository.addToList(it) }
+        item?.let {
+            viewModelScope.launch(Dispatchers.IO) {
+                todoItemsRepository.addToList(it)
+            }}
     }
 
     fun deleteItem(item: TodoItem?){
-        item?.let { todoItemsRepository.removeFromList(it) }
+        item?.let {
+            viewModelScope.launch(Dispatchers.IO) {
+                todoItemsRepository.removeFromList(it)
+            }}
     }
 
     fun updateItem(item: TodoItem?){
-        item?.let { todoItemsRepository.updateFromList(it) }
+        item?.let {
+            viewModelScope.launch(Dispatchers.IO) {
+                todoItemsRepository.updateFromList(it)
+            }}
     }
 
     fun updateText(text: String) {

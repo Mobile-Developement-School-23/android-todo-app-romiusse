@@ -10,6 +10,8 @@ import com.romiusse.todoapp.todo_list.TodoItem
 import com.romiusse.todoapp.todo_list.TodoItemsRepository
 import com.romiusse.todoapp.utils.Utils
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.lang.Exception
@@ -22,27 +24,37 @@ class MainScreenViewModel(
     private val _items = MutableLiveData<List<TodoItem>>()
     val items:LiveData<List<TodoItem>> = _items
 
-    private val toDoItemListener: ToDoItemListener = { _items.value = it }
+    //private val toDoItemListener: ToDoItemListener = { _items.value = it }
 
     init{
         loadDate()
-        viewModelScope.launch{
-            val dateFromServer = getServerDate()
-            dateFromServer?.let { todoItemsRepository.setList(it) }
 
-        }
+        //viewModelScope.launch{
+        //    val dateFromServer = getServerDate()
+        //    dateFromServer?.let { todoItemsRepository.setList(it) }
+        //}
     }
     override fun onCleared() {
         super.onCleared()
-        todoItemsRepository.removeListener(toDoItemListener)
+        //todoItemsRepository.removeListener(toDoItemListener)
 
     }
     private fun loadDate(){
-        todoItemsRepository.addListener(toDoItemListener)
+
+        viewModelScope.launch {
+            todoItemsRepository.
+            getList().collect{
+                _items.value = it
+            }
+        }
+
+        //todoItemsRepository.addListener(toDoItemListener)
     }
 
     fun updateFromList(todoItem: TodoItem){
-        todoItemsRepository.updateFromList(todoItem)
+        viewModelScope.launch(Dispatchers.IO) {
+            todoItemsRepository.updateFromList(todoItem)
+        }
     }
 
     private suspend fun getServerDate() = withContext(Dispatchers.IO){

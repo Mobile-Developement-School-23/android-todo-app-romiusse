@@ -17,57 +17,34 @@ import android.widget.TextView
 import androidx.core.text.color
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 
 typealias ToDoItemListener = (data: List<TodoItem>) -> Unit
 
-class TodoItemsRepository(){
+class TodoItemsRepository(private val todoItemDao: TodoItemDao): TodoItemsRepositoryInterface{
 
-    private val listeners = mutableListOf<ToDoItemListener>()
-
-    private var data: MutableList<TodoItem> = mutableListOf()
-
-    fun addToList(toDoItem: TodoItem){
-        data.add(toDoItem)
-        notifyChanges()
+    override suspend fun addToList(toDoItem: TodoItem){
+        todoItemDao.addToList(toDoItem)
     }
 
-    fun updateFromList(toDoItem: TodoItem){
-        val index = data.indexOfFirst { it.id == toDoItem.id }
-        data[index] = toDoItem
-        notifyChanges()
+    override suspend fun updateFromList(toDoItem: TodoItem){
+        todoItemDao.updateFromList(toDoItem)
     }
 
-    fun getItemFromListById(id: String?): TodoItem?{
-        return data.find { it.id == id }
+    override suspend fun getItemFromListById(id: String): TodoItem? {
+        return todoItemDao.getItemFromListById(id)
     }
 
-    fun removeFromList(toDoItem: TodoItem){
-        data.removeIf { it.id == toDoItem.id }
-        notifyChanges()
+    override suspend fun removeFromList(toDoItem: TodoItem){
+        todoItemDao.removeFromList(toDoItem)
     }
 
-    fun getList(): List<TodoItem> = data
-
-    fun setList(list: List<TodoItem>){
-        data = list.toMutableList()
-        notifyChanges()
-
-    }
-
-    fun addListener(listener: ToDoItemListener){
-        listeners.add(listener)
-        listener.invoke(getList())
-    }
-
-    fun removeListener(listener: ToDoItemListener){
-        listeners.remove(listener)
-    }
-
-    private fun notifyChanges(){
-        listeners.forEach{it.invoke(getList())}
+    override fun getList(): Flow<List<TodoItem>>{
+        return todoItemDao.getList()
     }
 
 }

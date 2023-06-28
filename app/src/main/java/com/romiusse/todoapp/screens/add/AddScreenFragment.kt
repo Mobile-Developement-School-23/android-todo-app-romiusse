@@ -84,15 +84,17 @@ class AddScreenFragment : Fragment() {
             close()
         }
 
-        binding.switchdeadline.setOnCheckedChangeListener { _, isChecked ->
-
-            if (isChecked){
+        binding.switchdeadline.setOnClickListener {
+            if(binding.switchdeadline.isChecked){
                 materialDatePicker.show(parentFragmentManager, "tag")
                 if(deadline == null) deadline = Date()
                 binding.textviewCalendardate.visibility = View.VISIBLE
                 binding.textviewCalendardate.text = Utils.convertDateToString(deadline)
             }
-            else binding.textviewCalendardate.visibility = View.GONE
+            else{
+                binding.textviewCalendardate.visibility = View.GONE
+                deadline = null
+            }
         }
 
         viewModel.item.observe(viewLifecycleOwner, Observer {
@@ -100,6 +102,7 @@ class AddScreenFragment : Fragment() {
             if(viewModel.isNew) binding.edittextAdding.setText(it.text)
             else viewModel.updateText(binding.edittextAdding.text.toString())
             updateScreen(it)
+            viewModel.isNew = false
         })
 
     }
@@ -115,7 +118,6 @@ class AddScreenFragment : Fragment() {
         }
 
     }
-
 
     private fun updateScreen(item: TodoItem) {
         item?.let {
