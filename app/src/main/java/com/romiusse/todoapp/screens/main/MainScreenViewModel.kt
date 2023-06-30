@@ -44,16 +44,30 @@ class MainScreenViewModel(
     private val _syncIconStatus = MutableLiveData<SyncIconStatus>()
     val syncIconStatus: LiveData<SyncIconStatus> = _syncIconStatus
 
+    private val _isBottomSheetShow = MutableLiveData<Boolean>(false)
+    val isBottomSheetShow: LiveData<Boolean> = _isBottomSheetShow
+
     private var isSynchronized = false
+    private var isPreSynchronized = false
+
+    private var isListInitialized = false
 
     private fun setItemsListener(){
         viewModelScope.launch {
             todoItemsRepository.
             getList().collect{ list ->
-                _items.value = list
 
-                if(isSynchronized && _isInternetConnected.value != null &&
-                    _isInternetConnected.value!!) mergeItems(list)
+                //Try to load data from server after list was initialized
+                if (!isListInitialized) loadData()
+                isListInitialized = true
+
+
+                    _items.value = list
+
+                    if (isSynchronized && _isInternetConnected.value != null &&
+                        _isInternetConnected.value!!
+                    ) mergeItems(list)
+
             }
         }
     }
@@ -84,20 +98,23 @@ class MainScreenViewModel(
 
         override fun onAvailable(network: Network) {
             super.onAvailable(network)
+            if(isListInitialized && !_isInternetConnected.value!!)
+                loadData()
             _isInternetConnected.postValue(true)
-
-            if(!isSynchronized) loadData()
         }
 
         override fun onLost(network: Network) {
             super.onLost(network)
             _isInternetConnected.postValue(false)
             _syncIconStatus.postValue(SyncIconStatus.ERROR)
+            isSynchronized = false
+            isPreSynchronized = false
         }
     }
 
-    private fun parseServerData(answer: ServerAnswer<List<ServerTodoItem>>){
+    private fun checkAreListsSame(list: List<TodoItem>) = (list == _items.value)
 
+    private fun parseServerData(answer: ServerAnswer<List<ServerTodoItem>>){
 
         when(answer.status){
 
@@ -109,14 +126,24 @@ class MainScreenViewModel(
                 val list: List<TodoItem> = answer.answer!!.map { convertServerModelToClient(it) }
 
                 if(!isSynchronized){
-                    updateAllList(list)
+
+                    if(!checkAreListsSame(list) && !isPreSynchronized){
+                        _isBottomSheetShow.value = true
+                        return
+                    }
+
+                    if(!checkAreListsSame(list)) updateAllList(list)
                     isSynchronized = true
+                    isPreSynchronized = true
                     _info.value = DATA_WAS_UPDATED
+                    _syncIconStatus.value = SyncIconStatus.OK
+                    return
                 }
 
-                _items.value = list
-
                 _syncIconStatus.value = SyncIconStatus.OK
+
+                if(checkAreListsSame(list)) return
+                updateAllList(list)
 
             }
             ServerStatus.RETRYING->{
@@ -142,15 +169,11 @@ class MainScreenViewModel(
     init{
         setItemsListener()
         setServerDataListener()
-
     }
-    private fun loadData(){
 
+    private fun loadData(){
         viewModelScope.launch(Dispatchers.IO){
             serverTransmitter.getItems()
-            //if(_items.value != null)
-            //    serverTransmitter.mergeItems(
-            //        ListWrapper(list = _items.value!!.map { convertClientModelToServer(it) }))
         }
 
     }
@@ -160,6 +183,24 @@ class MainScreenViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             todoItemsRepository.updateFromList(todoItem)
         }
+    }
+
+    fun setActualData(){
+        isPreSynchronized = true
+        _isBottomSheetShow.value = false
+        mergeItems(_items.value!!)
+    }
+
+    fun getActualData(){
+        isPreSynchronized = true
+        _isBottomSheetShow.value = false
+        loadData()
+    }
+
+    fun bottomSheetClosed(){
+        isPreSynchronized = false
+        _isBottomSheetShow.value = false
+        _syncIconStatus.value = SyncIconStatus.ERROR
     }
 
 

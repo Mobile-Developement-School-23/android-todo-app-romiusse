@@ -2,20 +2,20 @@ package com.romiusse.todoapp.screens.main
 
 import android.annotation.SuppressLint
 import android.net.ConnectivityManager
-import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
 import com.romiusse.todoapp.R
 import com.romiusse.todoapp.adaptor.Adapter
@@ -49,6 +49,8 @@ class MainScreenFragment : Fragment() {
         initAdapter()
         initRecyclerView()
         initAddButton()
+        initInternetListener()
+        initBottomSheetDialog()
 
         viewModel.items.observe(viewLifecycleOwner) {
             adapter.items = it.sortedBy { it.createdAt }
@@ -70,6 +72,9 @@ class MainScreenFragment : Fragment() {
         }
 
 
+    }
+
+    private fun initInternetListener(){
         val networkRequest = NetworkRequest.Builder()
             .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
             .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
@@ -78,10 +83,28 @@ class MainScreenFragment : Fragment() {
 
         val connectivityManager = getSystemService(requireContext(),ConnectivityManager::class.java) as ConnectivityManager
         connectivityManager.requestNetwork(networkRequest, viewModel.networkCallback)
-
-
     }
 
+    private fun initBottomSheetDialog(){
+        val bottomSheetDialog = BottomSheetDialog(requireContext())
+        bottomSheetDialog.setContentView(R.layout.main_botto_sheet_dialog)
+        bottomSheetDialog.findViewById<TextView>(R.id.set)?.setOnClickListener {
+            viewModel.setActualData()
+            bottomSheetDialog.dismiss()
+        }
+        bottomSheetDialog.findViewById<TextView>(R.id.get)?.setOnClickListener {
+            viewModel.getActualData()
+            bottomSheetDialog.dismiss()
+        }
+        bottomSheetDialog.setOnCancelListener {
+            viewModel.bottomSheetClosed()
+        }
+
+        viewModel.isBottomSheetShow.observe(viewLifecycleOwner) {
+            if(it) bottomSheetDialog.show()
+        }
+
+    }
 
     @SuppressLint("SetTextI18n")
     private fun countCompletedTasks(list: List<TodoItem>){

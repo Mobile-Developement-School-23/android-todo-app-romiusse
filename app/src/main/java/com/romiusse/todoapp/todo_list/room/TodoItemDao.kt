@@ -15,6 +15,10 @@ interface TodoItemDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addToList(todoItem: TodoItem)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @JvmSuppressWildcards
+    suspend fun insertAll(list: List<TodoItem>)
+
     @Query("SELECT * FROM ${TodoItem.TABLE_NAME}")
     fun getList() : Flow<List<TodoItem>>
 

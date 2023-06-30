@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:background="@drawable/background_corners"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/not_actual_data"
+        android:layout_gravity="center_horizontal"
+        android:textSize="20sp"
+        style="@style/TextAppearance.Title"
+        android:textColor="@color/label_primary"
+        android:layout_marginBottom="32dp"
+        android:padding="8dp"/>
+
+
+    <TextView
+        android:id="@+id/set"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:fontFamily="sans-serif-medium"
+        android:text="@string/set_actual"
+        android:textColor="@color/color_blue"
+        android:layout_marginBottom="32dp"
+        android:textSize="@dimen/Body" />
+
+    <TextView
+        android:id="@+id/get"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:fontFamily="sans-serif-medium"
+        android:text="@string/get_actual"
+        android:layout_marginBottom="32dp"
+        android:textColor="@color/color_blue"
+        android:textSize="@dimen/Body" />
+
+
+
+</LinearLayout>
