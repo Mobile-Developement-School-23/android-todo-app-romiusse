@@ -51,6 +51,7 @@ class MainScreenFragment : Fragment() {
         initAddButton()
         initInternetListener()
         initBottomSheetDialog()
+        initPullToRefresh()
 
         viewModel.items.observe(viewLifecycleOwner) {
             adapter.items = it.sortedBy { it.createdAt }
@@ -72,6 +73,13 @@ class MainScreenFragment : Fragment() {
         }
 
 
+    }
+
+    private fun initPullToRefresh() {
+        binding.pullToRefresh.setOnRefreshListener {
+            binding.pullToRefresh.isRefreshing = false
+            viewModel.refresh()
+        }
     }
 
     private fun initInternetListener(){

@@ -61,12 +61,15 @@ class MainScreenViewModel(
                 if (!isListInitialized) loadData()
                 isListInitialized = true
 
+                if(list.isNotEmpty()) {
 
                     _items.value = list
 
                     if (isSynchronized && _isInternetConnected.value != null &&
                         _isInternetConnected.value!!
                     ) mergeItems(list)
+                }
+                else _items.value = listOf()
 
             }
         }
@@ -201,6 +204,12 @@ class MainScreenViewModel(
         isPreSynchronized = false
         _isBottomSheetShow.value = false
         _syncIconStatus.value = SyncIconStatus.ERROR
+    }
+
+    fun refresh(){
+        isSynchronized = false
+        isPreSynchronized = false
+        loadData()
     }
 
 
