@@ -13,6 +13,10 @@ interface TodoItemsRepositoryInterface {
 
     suspend fun removeFromList(toDoItem: TodoItem)
 
+    suspend fun updateAllList(toDoItems: List<TodoItem>)
+
+    suspend fun deleteAll()
+
     fun getList(): Flow<List<TodoItem>>
 
 }

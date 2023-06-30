@@ -15,14 +15,13 @@ import java.net.SocketTimeoutException
 
 
 private const val TOKEN = "Bearer dithering"
-private const val MAX_RETRY = 5
+private const val MAX_RETRY = 3
 
 typealias ServerDataListener = (data: ServerAnswer<List<ServerTodoItem>>) -> Unit
 
 class ServerTransmitter(private val apiHelper: ApiHelper) : ServerTransmitterInterface {
 
     private val serverDataListeners = mutableSetOf<ServerDataListener>()
-    private var synchronized = false
     override var revision: Long = 0
 
     override suspend fun getItems(retryCnt: Int) {
@@ -33,7 +32,6 @@ class ServerTransmitter(private val apiHelper: ApiHelper) : ServerTransmitterInt
             val listWrapper: ListWrapper = apiHelper.getItems(TOKEN)
             val list = listWrapper.list
             listWrapper.revision?.let { revision = it }
-            synchronized = true
             notifyListeners(createAnswer(ServerStatus.SUCCESS, list,"getItems"))
 
         } catch (e: Exception){
@@ -43,11 +41,12 @@ class ServerTransmitter(private val apiHelper: ApiHelper) : ServerTransmitterInt
 
     override suspend fun mergeItems(jsonList: ListWrapper, retryCnt: Int) {
 
+        notifyListeners(createAnswer(ServerStatus.LOADING, requestName = "mergeItems"))
+
         try {
             val listWrapper = apiHelper.mergeItems(TOKEN, revision, jsonList) as ListWrapper
             val list = listWrapper.list
             listWrapper.revision?.let { revision = it }
-            synchronized = true
             notifyListeners(createAnswer(ServerStatus.SUCCESS, list,"mergeItems"))
 
         } catch (e: Exception){
@@ -68,7 +67,6 @@ class ServerTransmitter(private val apiHelper: ApiHelper) : ServerTransmitterInt
 
     private suspend fun exceptionsParser(exception: Exception, requestName: String, retryCnt: Int,
                                          vararg arg: ListWrapper){
-        synchronized = false
 
         val error = when (exception) {
             is SocketTimeoutException -> {

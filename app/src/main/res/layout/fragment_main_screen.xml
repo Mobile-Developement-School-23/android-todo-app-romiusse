@@ -49,6 +49,19 @@
                     app:layout_collapseMode="parallax"
                     app:layout_collapseParallaxMultiplier="1000" />
 
+
+                <ImageView
+                    android:id="@+id/sync"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_gravity="bottom|end"
+                    android:layout_marginEnd="64dp"
+                    android:layout_marginBottom="5dp"
+                    android:padding="5dp"
+                    android:src="@drawable/ic_cloud_error"
+                    app:layout_collapseMode="pin"
+                    app:tint="@color/color_blue" />
+
                 <ImageView
                     android:id="@+id/ivVisibility"
                     android:layout_width="wrap_content"

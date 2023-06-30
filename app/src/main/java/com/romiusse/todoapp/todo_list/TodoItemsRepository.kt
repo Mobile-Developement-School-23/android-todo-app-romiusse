@@ -22,8 +22,28 @@ class TodoItemsRepository(private val todoItemDao: TodoItemDao): TodoItemsReposi
         todoItemDao.removeFromList(toDoItem)
     }
 
+    override suspend fun updateAllList(toDoItems: List<TodoItem>) {
+        bruteUpdateList(toDoItems)
+        //toDoItems.forEach{ todoItemDao.addToList(it) }
+    }
+
+    override suspend fun deleteAll() {
+        todoItemDao.deleteAll()
+    }
+
     override fun getList(): Flow<List<TodoItem>>{
         return todoItemDao.getList()
     }
+
+    //TODO Merge brute and lazy in one algorithm
+    private suspend fun bruteUpdateList(toDoItems: List<TodoItem>){
+        deleteAll()
+        lazyUpdateList(toDoItems)
+    }
+
+    private suspend fun lazyUpdateList(toDoItems: List<TodoItem>){
+        toDoItems.forEach{ todoItemDao.addToList(it) }
+    }
+
 
 }

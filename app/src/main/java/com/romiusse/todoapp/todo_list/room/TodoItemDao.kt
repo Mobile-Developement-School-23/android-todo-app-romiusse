@@ -3,6 +3,7 @@ package com.romiusse.todoapp.todo_list.room
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.romiusse.todoapp.todo_list.TodoItem
@@ -11,7 +12,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface TodoItemDao {
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addToList(todoItem: TodoItem)
 
     @Query("SELECT * FROM ${TodoItem.TABLE_NAME}")
@@ -25,5 +26,8 @@ interface TodoItemDao {
 
     @Delete()
     suspend fun removeFromList(toDoItem: TodoItem)
+
+    @Query("DELETE FROM ${TodoItem.TABLE_NAME}")
+    suspend fun deleteAll()
 
 }
