@@ -13,6 +13,7 @@ import com.romiusse.todoapp.R
 import com.romiusse.todoapp.todo_list.PriorityItem
 import com.romiusse.todoapp.todo_list.TodoItem
 import com.romiusse.todoapp.todo_list.TodoItemsRepository
+import java.util.Date
 
 
 typealias CheckBoxListener = (item: TodoItem) -> Unit
@@ -48,14 +49,21 @@ class Adapter: RecyclerView.Adapter<ViewHolder>() {
         holder.bind(item)
 
 
-        if(item.priority == PriorityItem.HIGH){
-            holder.priorityIcon.visibility = View.VISIBLE
-            holder.priorityIcon.setImageResource(R.drawable.ic_priority)
+        when (item.priority) {
+            PriorityItem.HIGH -> {
+                holder.priorityIcon.visibility = View.VISIBLE
+                holder.priorityIcon.setImageResource(R.drawable.ic_priority)
+            }
+            PriorityItem.LOW -> {
+                holder.priorityIcon.visibility = View.VISIBLE
+                holder.priorityIcon.setImageResource(R.drawable.ic_arrow_to_down)
+            }
+            else -> {
+                holder.priorityIcon.visibility = View.GONE
+                holder.priorityIcon.setImageResource(R.drawable.ic_arrow_to_down)
+            }
         }
-        if(item.priority == PriorityItem.LOW){
-            holder.priorityIcon.visibility = View.VISIBLE
-            holder.priorityIcon.setImageResource(R.drawable.ic_arrow_to_down)
-        }
+
 
         if (item.flag) {
             holder.checkBoxItem.isChecked = true
@@ -67,20 +75,22 @@ class Adapter: RecyclerView.Adapter<ViewHolder>() {
 
         if (item.priority == PriorityItem.HIGH) {
             val tint = ContextCompat.getColorStateList(holder.itemView.context,R.drawable.checkbox_extra_tint)
-            val drawable = AppCompatResources.getDrawable(
-                holder.itemView.context,
-                R.drawable.checkbox_extra_drawable
-            )
-            holder.checkBoxItem.buttonDrawable = drawable
             holder.checkBoxItem.buttonTintList = tint
         } else{
             val tint = ContextCompat.getColorStateList(holder.itemView.context,R.drawable.checkbox_normal_tint)
             holder.checkBoxItem.buttonTintList = tint
         }
 
+        val drawable = AppCompatResources.getDrawable(
+            holder.itemView.context,
+            R.drawable.checkbox_extra_drawable
+        )
+        holder.checkBoxItem.buttonDrawable = drawable
 
-        holder.checkBoxItem.setOnCheckedChangeListener { _, isChecked ->
-            item.flag = isChecked
+
+        holder.checkBoxItem.setOnClickListener {
+            item.flag = holder.checkBoxItem.isChecked
+            item.changedAt = Date()
             notifyCheckBoxChanges(item)
         }
 

@@ -8,10 +8,9 @@ interface ServerTransmitterInterface {
 
     var revision: Long
 
-    suspend fun getItems(): List<ServerTodoItem>
+    suspend fun getItems(retryCnt: Int = 0)
 
-    suspend fun mergeItems(token: String, revision: String, jsonList: String) :
-            List<ServerTodoItem>
+    suspend fun mergeItems(jsonList: ListWrapper, retryCnt: Int = 0)
 
 
 }

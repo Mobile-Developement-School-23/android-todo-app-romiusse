@@ -43,7 +43,7 @@
                     android:layout_marginStart="60dp"
                     android:layout_marginTop="6dp"
                     android:textSize="@dimen/Body"
-                    android:text="Выполнено - 5"
+                    android:text="@string/completed"
                     style="@style/TextAppearance.Title"
                     android:textColor="@color/label_secondary"
                     app:layout_collapseMode="parallax"

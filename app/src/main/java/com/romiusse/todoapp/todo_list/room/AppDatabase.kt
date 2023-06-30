@@ -1,10 +1,11 @@
-package com.romiusse.todoapp.todo_list
+package com.romiusse.todoapp.todo_list.room
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import com.romiusse.todoapp.todo_list.TodoItem
 
 @Database(
     entities = [TodoItem::class], version = 1
@@ -16,7 +17,7 @@ abstract class AppDatabase: RoomDatabase() {
 
     companion object{
 
-        fun buildDatabase(context: Context, dbName: String): AppDatabase{
+        fun buildDatabase(context: Context, dbName: String): AppDatabase {
             return  Room.databaseBuilder(context, AppDatabase::class.java, dbName).build()
         }
 

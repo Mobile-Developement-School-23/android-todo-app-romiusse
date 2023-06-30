@@ -16,7 +16,7 @@ interface ApiService {
     @Headers("Content-Type: application/json")
     @PATCH("todobackend/list")
     suspend fun mergeItems(@Header("Authorization") token: String,
-                           @Header("X-Last-Known-Revision") revision: String,
-                           @Body jsonList: String): ListWrapper
+                           @Header("X-Last-Known-Revision") revision: Long,
+                           @Body jsonList: ListWrapper): ListWrapper
 
 }

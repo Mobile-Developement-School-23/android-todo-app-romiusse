@@ -8,8 +8,10 @@ import com.romiusse.todoapp.todo_list.PriorityItem
 import com.romiusse.todoapp.todo_list.TodoItem
 import com.romiusse.todoapp.todo_list.TodoItemsRepository
 import com.romiusse.todoapp.utils.Utils
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Date
@@ -58,21 +60,22 @@ class AddScreenViewModel(
 
     fun createItem(item: TodoItem?){
         item?.let {
-            viewModelScope.launch(Dispatchers.IO) {
+            CoroutineScope(Dispatchers.IO).launch{
                 todoItemsRepository.addToList(it)
-            }}
+            }
+        }
     }
 
     fun deleteItem(item: TodoItem?){
         item?.let {
-            viewModelScope.launch(Dispatchers.IO) {
+            CoroutineScope(Dispatchers.IO).launch{
                 todoItemsRepository.removeFromList(it)
             }}
     }
 
     fun updateItem(item: TodoItem?){
         item?.let {
-            viewModelScope.launch(Dispatchers.IO) {
+            CoroutineScope(Dispatchers.IO).launch{
                 todoItemsRepository.updateFromList(it)
             }}
     }

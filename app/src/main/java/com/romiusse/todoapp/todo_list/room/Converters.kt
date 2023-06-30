@@ -1,4 +1,4 @@
-package com.romiusse.todoapp.todo_list
+package com.romiusse.todoapp.todo_list.room
 
 import androidx.room.TypeConverter
 import java.util.Date

@@ -1,25 +1,23 @@
 package com.romiusse.todoapp.screens.main
 
 import android.annotation.SuppressLint
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.romiusse.todoapp.App
+import com.google.android.material.snackbar.Snackbar
 import com.romiusse.todoapp.R
 import com.romiusse.todoapp.adaptor.Adapter
 import com.romiusse.todoapp.databinding.FragmentMainScreenBinding
-import com.romiusse.todoapp.todo_list.TodoItemsRepository
-import com.romiusse.todoapp.todo_list.ToDoItemListener
+import com.romiusse.todoapp.todo_list.TodoItem
 import com.romiusse.todoapp.utils.factory
+
 
 class MainScreenFragment : Fragment() {
 
@@ -47,11 +45,22 @@ class MainScreenFragment : Fragment() {
         initRecyclerView()
         initAddButton()
 
-        viewModel.items.observe(viewLifecycleOwner, Observer {
+        viewModel.items.observe(viewLifecycleOwner) {
             adapter.items = it
-        })
+            countCompletedTasks(it)
+        }
+
+        viewModel.info.observe(viewLifecycleOwner) {
+            Snackbar.make(view, it, Snackbar.LENGTH_LONG).show()
+        }
 
 
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun countCompletedTasks(list: List<TodoItem>){
+        binding.completeTitle.text =  (context?.getString(R.string.completed) ?: "") +
+                " " + list.count { it.flag }.toString()
     }
 
     private fun initAddButton() {

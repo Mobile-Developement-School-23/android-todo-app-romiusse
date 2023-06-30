@@ -49,9 +49,22 @@ object Utils {
             changedAt = Date(model.changedAt)
         )
 
-    fun convertClientModelToServer(model: TodoItem): ServerTodoItem {
-        return null!!
-    }
+    fun convertClientModelToServer(model: TodoItem): ServerTodoItem =
+        ServerTodoItem(
+            id = model.id,
+            text = model.text,
+            importance = when(model.priority){
+                PriorityItem.LOW -> "low"
+                PriorityItem.BASE -> "basic"
+                PriorityItem.HIGH -> "important"
+            },
+            deadline = model.deadline?.time,
+            done = model.flag,
+            color = null,
+            createdAt = model.createdAt.time,
+            changedAt =  model.changedAt.time,
+            lastUpdatedBy = android.os.Build.MODEL
+        )
 
 
 }
