@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/mainScreenFragment">
+    app:startDestination="@id/loginFragment">
 
     <fragment
         android:id="@+id/mainScreenFragment"
@@ -21,6 +21,15 @@
         tools:layout="@layout/fragment_add_screen" >
         <action
             android:id="@+id/action_addScreenFragment_to_mainScreenFragment"
+            app:destination="@id/mainScreenFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.romiusse.todoapp.screens.login.LoginFragment"
+        android:label="fragment_login"
+        tools:layout="@layout/fragment_login" >
+        <action
+            android:id="@+id/action_loginFragment_to_mainScreenFragment"
             app:destination="@id/mainScreenFragment" />
     </fragment>
 </navigation>

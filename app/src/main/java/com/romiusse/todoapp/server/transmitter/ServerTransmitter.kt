@@ -14,7 +14,6 @@ import java.lang.Exception
 import java.net.SocketTimeoutException
 
 
-private const val TOKEN = "Bearer dithering"
 private const val MAX_RETRY = 3
 
 typealias ServerDataListener = (data: ServerAnswer<List<ServerTodoItem>>) -> Unit
@@ -23,6 +22,7 @@ class ServerTransmitter(private val apiHelper: ApiHelper) : ServerTransmitterInt
 
     private val serverDataListeners = mutableSetOf<ServerDataListener>()
     override var revision: Long = 0
+    var TOKEN = "Bearer dithering"
 
     override suspend fun getItems(retryCnt: Int) {
 

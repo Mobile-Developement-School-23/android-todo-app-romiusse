@@ -1,6 +1,8 @@
 package com.romiusse.todoapp.screens.main
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
@@ -9,19 +11,27 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
 import com.romiusse.todoapp.R
 import com.romiusse.todoapp.adaptor.Adapter
+import com.romiusse.todoapp.adaptor.BottomAdapter
 import com.romiusse.todoapp.databinding.FragmentMainScreenBinding
 import com.romiusse.todoapp.todo_list.TodoItem
 import com.romiusse.todoapp.utils.factory
+import com.yandex.authsdk.YandexAuthException
+import com.yandex.authsdk.YandexAuthLoginOptions
+import com.yandex.authsdk.YandexAuthOptions
+import com.yandex.authsdk.YandexAuthSdk
+import com.yandex.authsdk.YandexAuthToken
 
 
 class MainScreenFragment : Fragment() {
@@ -32,6 +42,8 @@ class MainScreenFragment : Fragment() {
 
     private lateinit var binding: FragmentMainScreenBinding
     private lateinit var adapter: Adapter
+    private lateinit var bottomAdapter: BottomAdapter
+
 
     private val viewModel: MainScreenViewModel by viewModels { factory() }
 
@@ -39,12 +51,20 @@ class MainScreenFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+        val arguments = arguments
+
+        viewModel.init(arguments?.getString("token"))
+
         binding = FragmentMainScreenBinding.inflate(layoutInflater, container, false)
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        viewModel.clearInfo()
 
         initAdapter()
         initRecyclerView()
@@ -58,8 +78,21 @@ class MainScreenFragment : Fragment() {
             countCompletedTasks(it)
         }
 
+        viewModel.bottomItems.observe(viewLifecycleOwner) { it ->
+            bottomAdapter.items = it.sortedBy { it.createdAt }
+        }
+
         viewModel.info.observe(viewLifecycleOwner) {
-            Snackbar.make(view, it, Snackbar.LENGTH_LONG).show()
+            val text = when(it){
+                DATA_WAS_UPDATED -> context?.getString(R.string.update_succses)
+                WRONG_AUTH -> context?.getString(R.string.auth_error)
+                CONNECTION_TIME_OUT -> context?.getString(R.string.connection_time_out)
+                SERVER_ERROR -> context?.getString(R.string.server_error)
+                CONNECTION_LOST -> context?.getString(R.string.connection_lost)
+                else -> it
+            }
+            if(text.toString() != "")
+                Snackbar.make(view, text.toString(), Snackbar.LENGTH_LONG).show()
         }
 
         viewModel.syncIconStatus.observe(viewLifecycleOwner){
@@ -74,6 +107,7 @@ class MainScreenFragment : Fragment() {
 
 
     }
+
 
     private fun initPullToRefresh() {
         binding.pullToRefresh.setOnRefreshListener {
@@ -94,7 +128,12 @@ class MainScreenFragment : Fragment() {
     }
 
     private fun initBottomSheetDialog(){
+        bottomAdapter = BottomAdapter()
+
+
         val bottomSheetDialog = BottomSheetDialog(requireContext())
+
+
         bottomSheetDialog.setContentView(R.layout.main_botto_sheet_dialog)
         bottomSheetDialog.findViewById<TextView>(R.id.set)?.setOnClickListener {
             viewModel.setActualData()
@@ -107,6 +146,9 @@ class MainScreenFragment : Fragment() {
         bottomSheetDialog.setOnCancelListener {
             viewModel.bottomSheetClosed()
         }
+        val recyclerView = bottomSheetDialog.findViewById<RecyclerView>(R.id.recyclerview1)!!
+        recyclerView.layoutManager = GridLayoutManager(activity, 1)
+        recyclerView.adapter = bottomAdapter
 
         viewModel.isBottomSheetShow.observe(viewLifecycleOwner) {
             if(it) bottomSheetDialog.show()

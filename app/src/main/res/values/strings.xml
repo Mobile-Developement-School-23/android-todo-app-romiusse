@@ -11,6 +11,13 @@
     <string name="not_actual_data">Ваши данные не актуальны</string>
     <string name="set_actual">Сделать их актуальными</string>
     <string name="get_actual">Загрузить актуальные</string>
+    <string name="actual_data">Актуальные данные:</string>
+    <string name="update_succses">Данные обновлены</string>
+    <string name="auth_error">Ошибка входа</string>
+    <string name="server_error">Ошибка сервера</string>
+    <string name="connection_time_out">Плохое соединение</string>
+    <string name="connection_lost">Нет подключения к интернету</string>
+    <string name="enter">Войти</string>
     <string-array name="priority">
         <item>Низкий</item>
         <item>Нет</item>

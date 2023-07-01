@@ -3,6 +3,7 @@ package com.romiusse.todoapp.screens.main
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
+import android.util.JsonToken
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -26,6 +27,7 @@ const val DATA_WAS_UPDATED = "DATA_WAS_UPDATED"
 const val CONNECTION_TIME_OUT = "CONNECTION_TIME_OUT"
 const val WRONG_AUTH = "WRONG_AUTH"
 const val SERVER_ERROR = "SERVER_ERROR"
+const val CONNECTION_LOST = "CONNECTION_LOST"
 
 class MainScreenViewModel(
     private val todoItemsRepository: TodoItemsRepository,
@@ -34,6 +36,9 @@ class MainScreenViewModel(
 
     private val _items = MutableLiveData<List<TodoItem>>()
     val items: LiveData<List<TodoItem>> = _items
+
+    private val _bottomItems = MutableLiveData<List<TodoItem>>()
+    val bottomItems: LiveData<List<TodoItem>> = _bottomItems
 
     private val _info = MutableLiveData<String>()
     val info: LiveData<String> = _info
@@ -58,7 +63,8 @@ class MainScreenViewModel(
             getList().collect{ list ->
 
                 //Try to load data from server after list was initialized
-                if (!isListInitialized) loadData()
+                if (!isListInitialized && _isInternetConnected.value != null &&
+                    _isInternetConnected.value!!) loadData()
                 isListInitialized = true
 
                 if(list.isNotEmpty()) {
@@ -101,7 +107,7 @@ class MainScreenViewModel(
 
         override fun onAvailable(network: Network) {
             super.onAvailable(network)
-            if(isListInitialized && !_isInternetConnected.value!!)
+            if(!_isInternetConnected.value!!)
                 loadData()
             _isInternetConnected.postValue(true)
         }
@@ -127,6 +133,9 @@ class MainScreenViewModel(
             ServerStatus.SUCCESS ->{
 
                 val list: List<TodoItem> = answer.answer!!.map { convertServerModelToClient(it) }
+
+                if(answer.requestName == "getItems")
+                    _bottomItems.value = list
 
                 if(!isSynchronized){
 
@@ -169,7 +178,8 @@ class MainScreenViewModel(
 
     }
 
-    init{
+    fun init(token: String?){
+        token?.let{serverTransmitter.TOKEN = token}
         setItemsListener()
         setServerDataListener()
     }
@@ -207,9 +217,18 @@ class MainScreenViewModel(
     }
 
     fun refresh(){
+        if (_isInternetConnected.value != null && !_isInternetConnected.value!!){
+            _info.value = CONNECTION_LOST
+            return
+        }
+
         isSynchronized = false
         isPreSynchronized = false
         loadData()
+    }
+
+    fun clearInfo() {
+        _info.value = ""
     }
 
 
