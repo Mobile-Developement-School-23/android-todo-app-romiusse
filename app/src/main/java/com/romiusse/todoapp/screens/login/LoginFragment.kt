@@ -2,24 +2,25 @@ package com.romiusse.todoapp.screens.login
 
 import android.app.Activity
 import android.content.Intent
-import androidx.lifecycle.ViewModelProvider
+import android.content.SharedPreferences
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.os.bundleOf
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.preference.PreferenceManager
 import com.romiusse.todoapp.R
 import com.romiusse.todoapp.databinding.FragmentLoginBinding
-import com.romiusse.todoapp.databinding.FragmentMainScreenBinding
 import com.yandex.authsdk.YandexAuthException
 import com.yandex.authsdk.YandexAuthLoginOptions
 import com.yandex.authsdk.YandexAuthOptions
 import com.yandex.authsdk.YandexAuthSdk
 import com.yandex.authsdk.YandexAuthToken
+
 
 class LoginFragment : Fragment() {
 
@@ -56,6 +57,13 @@ class LoginFragment : Fragment() {
                             sdk.extractToken(result.resultCode, result.data)
                         if (yandexAuthToken != null) {
                             val bundle = bundleOf("token" to "OAuth ${yandexAuthToken.value}")
+
+                            val settings: SharedPreferences =
+                                PreferenceManager.getDefaultSharedPreferences(requireContext())
+                            val editor = settings.edit()
+                            editor.putString("server_token", "OAuth ${yandexAuthToken.value}")
+                            editor.commit()
+
                             findNavController().navigate(
                                 R.id.action_loginFragment_to_mainScreenFragment,
                                 bundle
