@@ -13,6 +13,7 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceManager
+import com.google.android.material.snackbar.Snackbar
 import com.romiusse.todoapp.R
 import com.romiusse.todoapp.databinding.FragmentLoginBinding
 import com.yandex.authsdk.YandexAuthException
@@ -46,6 +47,9 @@ class LoginFragment : Fragment() {
         binding.login.setOnClickListener {
             login()
         }
+        binding.login2.setOnClickListener {
+            offlineLogin(view)
+        }
         sdk = YandexAuthSdk(
             requireContext(), YandexAuthOptions(requireContext())
         )
@@ -77,6 +81,21 @@ class LoginFragment : Fragment() {
     }
 
 
+    private fun offlineLogin(view: View){
+        val settings = PreferenceManager.getDefaultSharedPreferences(requireContext())
+        val token = settings.getString("server_token", "")
+        if(token != null && token != ""){
+
+            val bundle = bundleOf("token" to "OAuth $token")
+            findNavController().navigate(
+                R.id.action_loginFragment_to_mainScreenFragment,
+                bundle
+            )
+        }
+        else{
+            Snackbar.make(view, "Сначала необходимо войти по сети", Snackbar.LENGTH_LONG).show()
+        }
+    }
 
     private fun login() {
 

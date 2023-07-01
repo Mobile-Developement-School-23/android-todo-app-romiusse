@@ -18,6 +18,7 @@
     <string name="connection_time_out">Плохое соединение</string>
     <string name="connection_lost">Нет подключения к интернету</string>
     <string name="enter">Войти</string>
+    <string name="offline_enter">Войти оффлайн</string>
     <string-array name="priority">
         <item>Низкий</item>
         <item>Нет</item>
