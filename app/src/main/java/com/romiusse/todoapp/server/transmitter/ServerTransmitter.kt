@@ -22,7 +22,7 @@ class ServerTransmitter(private val apiHelper: ApiHelper) : ServerTransmitterInt
 
     private val serverDataListeners = mutableSetOf<ServerDataListener>()
     override var revision: Long = 0
-    var TOKEN = "Bearer dithering"
+    var TOKEN = ""
 
     override suspend fun getItems(retryCnt: Int) {
 
