@@ -63,19 +63,14 @@ class MainScreenViewModel(
             getList().collect{ list ->
 
                 //Try to load data from server after list was initialized
-                if (!isListInitialized && _isInternetConnected.value != null &&
-                    _isInternetConnected.value!!) loadData()
+                if (!isListInitialized && _isInternetConnected.value!!) loadData()
                 isListInitialized = true
 
-                if(list.isNotEmpty()) {
 
-                    _items.value = list
+                _items.value = list
 
-                    if (isSynchronized && _isInternetConnected.value != null &&
-                        _isInternetConnected.value!!
-                    ) mergeItems(list)
-                }
-                else _items.value = listOf()
+                if (isSynchronized && _isInternetConnected.value!!
+                ) mergeItems(list)
 
             }
         }
@@ -178,10 +173,13 @@ class MainScreenViewModel(
 
     }
 
-    fun init(token: String?){
-        token?.let{serverTransmitter.TOKEN = token}
+    init {
         setItemsListener()
         setServerDataListener()
+    }
+
+    fun init(token: String?){
+        token?.let{serverTransmitter.TOKEN = token}
     }
 
     private fun loadData(){

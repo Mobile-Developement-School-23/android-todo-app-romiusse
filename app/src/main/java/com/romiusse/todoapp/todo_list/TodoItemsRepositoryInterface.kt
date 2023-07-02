@@ -15,8 +15,6 @@ interface TodoItemsRepositoryInterface {
 
     suspend fun updateAllList(toDoItems: List<TodoItem>)
 
-    suspend fun deleteAll()
-
     fun getList(): Flow<List<TodoItem>>
 
 }
