@@ -19,6 +19,7 @@
     <string name="connection_lost">Нет подключения к интернету</string>
     <string name="enter">Войти</string>
     <string name="offline_enter">Войти оффлайн</string>
+    <string name="retrying">Ошибка. Повторяю запрос </string>
     <string-array name="priority">
         <item>Низкий</item>
         <item>Нет</item>

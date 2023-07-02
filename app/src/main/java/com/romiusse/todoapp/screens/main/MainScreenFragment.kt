@@ -1,8 +1,6 @@
 package com.romiusse.todoapp.screens.main
 
 import android.annotation.SuppressLint
-import android.app.Activity
-import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
@@ -11,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
@@ -25,27 +22,19 @@ import com.romiusse.todoapp.R
 import com.romiusse.todoapp.adaptor.Adapter
 import com.romiusse.todoapp.adaptor.BottomAdapter
 import com.romiusse.todoapp.databinding.FragmentMainScreenBinding
+import com.romiusse.todoapp.screens.main.snack_bar_msg.MessageStatus
 import com.romiusse.todoapp.todo_list.TodoItem
 import com.romiusse.todoapp.utils.factory
-import com.yandex.authsdk.YandexAuthException
-import com.yandex.authsdk.YandexAuthLoginOptions
-import com.yandex.authsdk.YandexAuthOptions
-import com.yandex.authsdk.YandexAuthSdk
-import com.yandex.authsdk.YandexAuthToken
 
 
 class MainScreenFragment : Fragment() {
 
-    companion object {
-        fun newInstance() = MainScreenFragment()
-    }
-
     private lateinit var binding: FragmentMainScreenBinding
-    private lateinit var adapter: Adapter
     private lateinit var bottomAdapter: BottomAdapter
-
+    private lateinit var adapter: Adapter
 
     private val viewModel: MainScreenViewModel by viewModels { factory() }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -53,48 +42,49 @@ class MainScreenFragment : Fragment() {
     ): View? {
 
         val arguments = arguments
-
-        viewModel.init(arguments?.getString("token"))
+        viewModel.initToken(arguments?.getString("token"))
 
         binding = FragmentMainScreenBinding.inflate(layoutInflater, container, false)
-
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initializeAll()
+        startListener()
+    }
 
-        viewModel.clearInfo()
-
+    private fun initializeAll(){
         initAdapter()
         initRecyclerView()
         initAddButton()
         initInternetListener()
         initBottomSheetDialog()
         initPullToRefresh()
+        initSnackBar()
+    }
 
+    private fun startListener(){
+        listenSnackBarMessages()
+        listenSyncIconStatus()
+        listenItemsUpdates()
+        listenBottomItemsUpdates()
+    }
+
+    private fun listenItemsUpdates(){
         viewModel.items.observe(viewLifecycleOwner) {
             adapter.items = it.sortedBy { it.createdAt }
             countCompletedTasks(it)
         }
+    }
 
+    private fun listenBottomItemsUpdates(){
         viewModel.bottomItems.observe(viewLifecycleOwner) { it ->
             bottomAdapter.items = it.sortedBy { it.createdAt }
         }
+    }
 
-        viewModel.info.observe(viewLifecycleOwner) {
-            val text = when(it){
-                DATA_WAS_UPDATED -> context?.getString(R.string.update_succses)
-                WRONG_AUTH -> context?.getString(R.string.auth_error)
-                CONNECTION_TIME_OUT -> context?.getString(R.string.connection_time_out)
-                SERVER_ERROR -> context?.getString(R.string.server_error)
-                CONNECTION_LOST -> context?.getString(R.string.connection_lost)
-                else -> it
-            }
-            if(text.toString() != "")
-                Snackbar.make(view, text.toString(), Snackbar.LENGTH_LONG).show()
-        }
-
+    private fun listenSyncIconStatus(){
         viewModel.syncIconStatus.observe(viewLifecycleOwner){
             binding.sync.setImageResource(
                 when(it){
@@ -104,10 +94,30 @@ class MainScreenFragment : Fragment() {
                 }
             )
         }
-
-
     }
 
+    private fun listenSnackBarMessages(){
+        viewModel.info.observe(viewLifecycleOwner) {
+
+            it?.let {
+                val text = when(it.status){
+                    MessageStatus.DATA_WAS_UPDATED -> context?.getString(R.string.update_succses)
+                    MessageStatus.WRONG_AUTH -> context?.getString(R.string.auth_error)
+                    MessageStatus.CONNECTION_TIME_OUT -> context?.getString(R.string.connection_time_out)
+                    MessageStatus.SERVER_ERROR -> context?.getString(R.string.server_error)
+                    MessageStatus.CONNECTION_LOST -> context?.getString(R.string.connection_lost)
+                    MessageStatus.RETRYING -> context?.getString(R.string.retrying)
+                }
+                val prefix = it.prefix ?: ""
+                val suffix = it.suffix ?: ""
+                Snackbar.make(binding.root, prefix + text + suffix, Snackbar.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    private fun initSnackBar(){
+        viewModel.clearInfo()
+    }
 
     private fun initPullToRefresh() {
         binding.pullToRefresh.setOnRefreshListener {
@@ -117,13 +127,15 @@ class MainScreenFragment : Fragment() {
     }
 
     private fun initInternetListener(){
+
         val networkRequest = NetworkRequest.Builder()
             .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
             .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
             .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
             .build()
 
-        val connectivityManager = getSystemService(requireContext(),ConnectivityManager::class.java) as ConnectivityManager
+        val connectivityManager = getSystemService(requireContext(),
+            ConnectivityManager::class.java) as ConnectivityManager
         connectivityManager.requestNetwork(networkRequest, viewModel.networkCallback)
     }
 
@@ -146,7 +158,8 @@ class MainScreenFragment : Fragment() {
         bottomSheetDialog.setOnCancelListener {
             viewModel.bottomSheetClosed()
         }
-        val recyclerView = bottomSheetDialog.findViewById<RecyclerView>(R.id.recyclerview1)!!
+        val recyclerView =
+            bottomSheetDialog.findViewById<RecyclerView>(R.id.recyclerview1)!!
         recyclerView.layoutManager = GridLayoutManager(activity, 1)
         recyclerView.adapter = bottomAdapter
 
@@ -184,7 +197,6 @@ class MainScreenFragment : Fragment() {
 
     private fun initRecyclerView() {
         binding.apply {
-
             recyclerview.layoutManager = GridLayoutManager(activity, 1)
             recyclerview.adapter = adapter
         }
