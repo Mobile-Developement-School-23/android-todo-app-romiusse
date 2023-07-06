@@ -1,30 +1,37 @@
 package com.romiusse.todoapp.utils
 
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.romiusse.todoapp.App
-import com.romiusse.todoapp.screens.add.AddScreenViewModel
-import com.romiusse.todoapp.screens.main.BottomSheetUtils
-import com.romiusse.todoapp.screens.main.MainScreenViewModel
-import java.lang.IllegalStateException
+import javax.inject.Inject
+import javax.inject.Provider
+import javax.inject.Singleton
 
-class ViewModelFactory(
-    private val app: App
-): ViewModelProvider.Factory {
+@Singleton
+class ViewModelFactory @Inject constructor(
+    private val creators: Map<Class<out ViewModel>, @JvmSuppressWildcards Provider<ViewModel>>
+) : ViewModelProvider.Factory {
+
+    @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        val viewModel = when(modelClass){
-            MainScreenViewModel::class.java ->{
-                MainScreenViewModel(app.todoItemsRepository, app.serverTransmitter, app.bottomSheetUtils)
-            }
-            AddScreenViewModel::class.java ->{
-                AddScreenViewModel(app.todoItemsRepository)
-            }
-            else -> throw IllegalStateException("Unknown View Model")
+        var creator: Provider<out ViewModel>? = creators[modelClass]
 
+        if (creator == null) {
+            for ((key, value) in creators) {
+                if (modelClass.isAssignableFrom(key)) {
+                    creator = value
+                    break
+                }
+            }
         }
-        return viewModel as T
+
+        if (creator == null) {
+            throw IllegalArgumentException("Unknown model class $modelClass")
+        }
+
+        return try {
+            creator.get() as T
+        } catch (e: Exception) {
+            throw RuntimeException(e)
+        }
     }
 }
-
-fun Fragment.factory() = ViewModelFactory(requireContext().applicationContext as App)

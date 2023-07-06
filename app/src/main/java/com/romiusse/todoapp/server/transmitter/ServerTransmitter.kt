@@ -3,7 +3,6 @@ package com.romiusse.todoapp.server.transmitter
 import com.romiusse.todoapp.server.api.ApiHelper
 import com.romiusse.todoapp.server.model.ListWrapper
 import com.romiusse.todoapp.server.model.ServerTodoItem
-import com.romiusse.todoapp.todo_list.TodoItem
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.delay
@@ -15,6 +14,12 @@ import java.net.SocketTimeoutException
 
 
 private const val MAX_RETRY = 3
+private const val RETRY_TIME = 500L
+
+const val WRONG_REQUEST     = 400
+const val WRONG_AUTH        = 401
+const val ELEMENT_NOT_FOUND = 404
+const val SERVER_ERROR      = 500
 
 typealias ServerDataListener = (data: ServerAnswer<List<ServerTodoItem>>) -> Unit
 
@@ -22,14 +27,14 @@ class ServerTransmitter(private val apiHelper: ApiHelper) : ServerTransmitterInt
 
     private val serverDataListeners = mutableSetOf<ServerDataListener>()
     override var revision: Long = 0
-    var TOKEN = ""
+    var token = ""
 
     override suspend fun getItems(retryCnt: Int) {
 
         notifyListeners(createAnswer(ServerStatus.LOADING, requestName = "getItems"))
 
         try {
-            val listWrapper: ListWrapper = apiHelper.getItems(TOKEN)
+            val listWrapper: ListWrapper = apiHelper.getItems(token)
             val list = listWrapper.list
             listWrapper.revision?.let { revision = it }
             notifyListeners(createAnswer(ServerStatus.SUCCESS, list,"getItems"))
@@ -44,7 +49,7 @@ class ServerTransmitter(private val apiHelper: ApiHelper) : ServerTransmitterInt
         notifyListeners(createAnswer(ServerStatus.LOADING, requestName = "mergeItems"))
 
         try {
-            val listWrapper = apiHelper.mergeItems(TOKEN, revision, jsonList) as ListWrapper
+            val listWrapper = apiHelper.mergeItems(token, revision, jsonList)
             val list = listWrapper.list
             listWrapper.revision?.let { revision = it }
             notifyListeners(createAnswer(ServerStatus.SUCCESS, list,"mergeItems"))
@@ -76,10 +81,10 @@ class ServerTransmitter(private val apiHelper: ApiHelper) : ServerTransmitterInt
             }
             is retrofit2.HttpException -> {
                 val code = when(exception.code()){
-                    400 -> ServerErrors.WRONG_REQUEST
-                    401 -> ServerErrors.WRONG_AUTH
-                    404 -> ServerErrors.ELEMENT_NOT_FOUND
-                    500 -> ServerErrors.SERVER_ERROR
+                    WRONG_REQUEST -> ServerErrors.WRONG_REQUEST
+                    WRONG_AUTH -> ServerErrors.WRONG_AUTH
+                    ELEMENT_NOT_FOUND -> ServerErrors.ELEMENT_NOT_FOUND
+                    SERVER_ERROR -> ServerErrors.SERVER_ERROR
                     else -> ServerErrors.SERVER_ERROR
                 }
                 code
@@ -97,7 +102,7 @@ class ServerTransmitter(private val apiHelper: ApiHelper) : ServerTransmitterInt
             notifyListeners(createAnswer(ServerStatus.RETRYING, requestName = requestName,
                 info = "${retryCnt + 1} / $MAX_RETRY"))
 
-            delay(500)
+            delay(RETRY_TIME)
 
             when(requestName){
 

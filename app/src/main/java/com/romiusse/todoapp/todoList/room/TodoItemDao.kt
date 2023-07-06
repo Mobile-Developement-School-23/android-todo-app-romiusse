@@ -1,6 +1,5 @@
-package com.romiusse.todoapp.todo_list.room
+package com.romiusse.todoapp.todoList.room
 
-import android.provider.SyncStateContract.Helpers.insert
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -8,9 +7,8 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
-import com.romiusse.todoapp.todo_list.TodoItem
+import com.romiusse.todoapp.todoList.TodoItem
 import kotlinx.coroutines.flow.Flow
-import java.nio.file.Files.delete
 
 
 @Dao

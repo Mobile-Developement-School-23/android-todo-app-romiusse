@@ -4,22 +4,19 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.romiusse.todoapp.todo_list.PriorityItem
-import com.romiusse.todoapp.todo_list.TodoItem
-import com.romiusse.todoapp.todo_list.TodoItemsRepository
-import com.romiusse.todoapp.utils.Utils
+import com.romiusse.todoapp.todoList.PriorityItem
+import com.romiusse.todoapp.todoList.TodoItem
+import com.romiusse.todoapp.todoList.TodoItemsRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Date
-import kotlin.math.max
+import javax.inject.Inject
 
 
-class AddScreenViewModel(
-    private val todoItemsRepository: TodoItemsRepository
+class AddScreenViewModel @Inject constructor(
+    val todoItemsRepository: TodoItemsRepository
 ) : ViewModel() {
 
     private val _item = MutableLiveData<TodoItem>()

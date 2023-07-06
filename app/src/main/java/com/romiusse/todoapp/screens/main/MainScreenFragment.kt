@@ -1,6 +1,7 @@
 package com.romiusse.todoapp.screens.main
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
@@ -13,18 +14,21 @@ import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
+import com.romiusse.todoapp.App
 import com.romiusse.todoapp.R
 import com.romiusse.todoapp.adaptor.Adapter
 import com.romiusse.todoapp.adaptor.BottomAdapter
 import com.romiusse.todoapp.databinding.FragmentMainScreenBinding
+import com.romiusse.todoapp.screens.add.AddScreenViewModel
 import com.romiusse.todoapp.screens.main.snack_bar_msg.MessageStatus
-import com.romiusse.todoapp.todo_list.TodoItem
-import com.romiusse.todoapp.utils.factory
+import com.romiusse.todoapp.todoList.TodoItem
+import javax.inject.Inject
 
 
 class MainScreenFragment : Fragment() {
@@ -33,8 +37,16 @@ class MainScreenFragment : Fragment() {
     private lateinit var bottomAdapter: BottomAdapter
     private lateinit var adapter: Adapter
 
-    private val viewModel: MainScreenViewModel by viewModels { factory() }
+    @Inject
+    lateinit var modelFactory: ViewModelProvider.Factory
+    private lateinit var viewModel: MainScreenViewModel
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        (requireContext().applicationContext as App).appComponent.inject(this)
+        viewModel = ViewModelProvider(viewModelStore, modelFactory)[MainScreenViewModel::class.java]
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -79,8 +91,8 @@ class MainScreenFragment : Fragment() {
     }
 
     private fun listenBottomItemsUpdates(){
-        viewModel.bottomItems.observe(viewLifecycleOwner) { it ->
-            bottomAdapter.items = it.sortedBy { it.createdAt }
+        viewModel.bottomItems.observe(viewLifecycleOwner) { items ->
+            bottomAdapter.items = items.sortedBy { it.createdAt }
         }
     }
 
@@ -110,7 +122,7 @@ class MainScreenFragment : Fragment() {
                 }
                 val prefix = it.prefix ?: ""
                 val suffix = it.suffix ?: ""
-                Snackbar.make(binding.root, prefix + text + suffix, Snackbar.LENGTH_LONG).show()
+                Snackbar.make(binding.root, "$prefix $text $suffix", Snackbar.LENGTH_LONG).show()
             }
         }
     }

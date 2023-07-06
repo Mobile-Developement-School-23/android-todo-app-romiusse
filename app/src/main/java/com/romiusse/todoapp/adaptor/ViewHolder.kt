@@ -3,7 +3,7 @@ package com.romiusse.todoapp.adaptor
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.romiusse.todoapp.databinding.ItemTaskBinding
-import com.romiusse.todoapp.todo_list.TodoItem
+import com.romiusse.todoapp.todoList.TodoItem
 import com.romiusse.todoapp.utils.Utils
 
 class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {

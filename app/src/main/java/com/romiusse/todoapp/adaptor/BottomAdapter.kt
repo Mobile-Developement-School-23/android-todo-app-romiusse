@@ -9,9 +9,8 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.romiusse.todoapp.R
-import com.romiusse.todoapp.todo_list.PriorityItem
-import com.romiusse.todoapp.todo_list.TodoItem
-import java.util.Date
+import com.romiusse.todoapp.todoList.PriorityItem
+import com.romiusse.todoapp.todoList.TodoItem
 
 class BottomAdapter: RecyclerView.Adapter<ViewHolder>() {
 

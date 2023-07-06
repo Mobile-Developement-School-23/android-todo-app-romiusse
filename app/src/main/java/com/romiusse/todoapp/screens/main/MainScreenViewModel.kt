@@ -14,16 +14,17 @@ import com.romiusse.todoapp.server.transmitter.ServerAnswer
 import com.romiusse.todoapp.server.transmitter.ServerErrors
 import com.romiusse.todoapp.server.transmitter.ServerStatus
 import com.romiusse.todoapp.server.transmitter.ServerTransmitter
-import com.romiusse.todoapp.todo_list.TodoItem
-import com.romiusse.todoapp.todo_list.TodoItemsRepository
+import com.romiusse.todoapp.todoList.TodoItem
+import com.romiusse.todoapp.todoList.TodoItemsRepository
 import com.romiusse.todoapp.utils.Utils.convertClientModelToServer
 import com.romiusse.todoapp.utils.Utils.convertServerModelToClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.Date
+import javax.inject.Inject
 
 
-class MainScreenViewModel(
+class MainScreenViewModel @Inject constructor(
     private val todoItemsRepository: TodoItemsRepository,
     private val serverTransmitter: ServerTransmitter,
     private val bottomSheetUtils: BottomSheetUtils
@@ -60,7 +61,7 @@ class MainScreenViewModel(
     }
 
     fun initToken(token: String?){
-        token?.let{serverTransmitter.TOKEN = token}
+        token?.let{serverTransmitter.token = token}
     }
 
     private fun setItemsListener(){
@@ -183,14 +184,14 @@ class MainScreenViewModel(
         notSynchronized()
     }
 
-    private fun onLoading(answer: ServerAnswer<List<ServerTodoItem>>){
+    private fun onLoading(){
         _syncIconStatus.value = SyncIconStatus.SYNCHRONIZING
     }
 
     private fun parseServerData(answer: ServerAnswer<List<ServerTodoItem>>){
 
         when(answer.status){
-            ServerStatus.LOADING    -> onLoading(answer)
+            ServerStatus.LOADING    -> onLoading()
             ServerStatus.SUCCESS    -> onSuccess(answer)
             ServerStatus.RETRYING   -> onRetry(answer)
             ServerStatus.ERROR      -> onError(answer)

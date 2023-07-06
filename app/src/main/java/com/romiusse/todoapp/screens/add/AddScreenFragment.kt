@@ -1,6 +1,6 @@
 package com.romiusse.todoapp.screens.add
 
-import androidx.lifecycle.ViewModelProvider
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -9,24 +9,19 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.romiusse.todoapp.App
 import com.romiusse.todoapp.R
 import com.romiusse.todoapp.databinding.FragmentAddScreenBinding
 import com.romiusse.todoapp.screens.main.MainScreenViewModel
-import com.romiusse.todoapp.todo_list.TodoItem
-import com.romiusse.todoapp.todo_list.TodoItemsRepository
+import com.romiusse.todoapp.todoList.TodoItem
 import com.romiusse.todoapp.utils.Utils
-import com.romiusse.todoapp.utils.factory
 import java.util.Date
-import java.util.Timer
+import javax.inject.Inject
 
 class AddScreenFragment : Fragment() {
-
-    companion object {
-        fun newInstance() = AddScreenFragment()
-    }
 
     private lateinit var binding: FragmentAddScreenBinding
 
@@ -37,14 +32,20 @@ class AddScreenFragment : Fragment() {
         }
     private var materialDatePicker = MaterialDatePicker.Builder.datePicker().build()
 
-    private val viewModel: AddScreenViewModel by viewModels { factory() }
+    @Inject
+    lateinit var modelFactory: ViewModelProvider.Factory
+    private lateinit var viewModel: AddScreenViewModel
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        (requireContext().applicationContext as App).appComponent.inject(this)
+        viewModel = ViewModelProvider(viewModelStore, modelFactory)[AddScreenViewModel::class.java]
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
 
 
         val arguments = arguments

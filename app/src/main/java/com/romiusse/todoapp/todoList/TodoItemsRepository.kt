@@ -1,7 +1,7 @@
-package com.romiusse.todoapp.todo_list
+package com.romiusse.todoapp.todoList
 
 
-import com.romiusse.todoapp.todo_list.room.TodoItemDao
+import com.romiusse.todoapp.todoList.room.TodoItemDao
 import kotlinx.coroutines.flow.Flow
 
 class TodoItemsRepository(private val todoItemDao: TodoItemDao): TodoItemsRepositoryInterface{

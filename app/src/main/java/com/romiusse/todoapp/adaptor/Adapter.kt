@@ -3,16 +3,14 @@ package com.romiusse.todoapp.adaptor
 import android.annotation.SuppressLint
 import android.graphics.Paint
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.romiusse.todoapp.R
-import com.romiusse.todoapp.todo_list.PriorityItem
-import com.romiusse.todoapp.todo_list.TodoItem
-import com.romiusse.todoapp.todo_list.TodoItemsRepository
+import com.romiusse.todoapp.todoList.PriorityItem
+import com.romiusse.todoapp.todoList.TodoItem
 import java.util.Date
 
 

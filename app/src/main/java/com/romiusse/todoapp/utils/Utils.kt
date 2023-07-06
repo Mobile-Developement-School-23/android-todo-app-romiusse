@@ -1,8 +1,8 @@
 package com.romiusse.todoapp.utils
 
 import com.romiusse.todoapp.server.model.ServerTodoItem
-import com.romiusse.todoapp.todo_list.PriorityItem
-import com.romiusse.todoapp.todo_list.TodoItem
+import com.romiusse.todoapp.todoList.PriorityItem
+import com.romiusse.todoapp.todoList.TodoItem
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale

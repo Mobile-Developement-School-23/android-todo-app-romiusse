@@ -1,10 +1,9 @@
-package com.romiusse.todoapp.todo_list
+package com.romiusse.todoapp.todoList
 
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import androidx.room.TypeConverters
-import com.romiusse.todoapp.todo_list.TodoItem.Companion.TABLE_NAME
+import com.romiusse.todoapp.todoList.TodoItem.Companion.TABLE_NAME
 import java.util.Date
 
 

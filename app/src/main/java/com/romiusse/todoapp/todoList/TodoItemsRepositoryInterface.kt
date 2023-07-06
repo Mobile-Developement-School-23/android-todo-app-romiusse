@@ -1,4 +1,4 @@
-package com.romiusse.todoapp.todo_list
+package com.romiusse.todoapp.todoList
 
 import kotlinx.coroutines.flow.Flow
 
