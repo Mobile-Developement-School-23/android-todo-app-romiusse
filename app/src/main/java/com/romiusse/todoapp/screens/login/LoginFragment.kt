@@ -17,9 +17,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceManager
 import com.google.android.material.snackbar.Snackbar
 import com.romiusse.todoapp.App
-import com.romiusse.todoapp.R
+import com.romiusse.login.R
 import com.romiusse.todoapp.databinding.FragmentLoginBinding
-import com.romiusse.todoapp.screens.main.MainScreenViewModel
 import com.yandex.authsdk.YandexAuthException
 import com.yandex.authsdk.YandexAuthLoginOptions
 import com.yandex.authsdk.YandexAuthOptions

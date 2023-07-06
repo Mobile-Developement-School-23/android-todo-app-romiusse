@@ -4,22 +4,19 @@ import android.app.Application
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.romiusse.edit_todo.di.EditDeps
+import com.romiusse.server_api.api.ApiHelper
+import com.romiusse.server_api.api.RetrofitBuilder
+import com.romiusse.todo_list.screen.BottomSheetUtils
 import com.romiusse.todoapp.App
-import com.romiusse.todoapp.MainActivity
-import com.romiusse.todoapp.screens.add.AddScreenFragment
-import com.romiusse.todoapp.screens.add.AddScreenViewModel
-import com.romiusse.todoapp.screens.login.LoginViewModel
-import com.romiusse.todoapp.screens.main.BottomSheetUtils
-import com.romiusse.todoapp.screens.main.MainScreenFragment
-import com.romiusse.todoapp.screens.main.MainScreenViewModel
-import com.romiusse.todoapp.server.api.ApiHelper
-import com.romiusse.todoapp.server.api.RetrofitBuilder
-import com.romiusse.todoapp.server.transmitter.ServerTransmitter
-import com.romiusse.todoapp.todoList.TodoItemsRepository
-import com.romiusse.todoapp.todoList.room.TodoItemDao
-import com.romiusse.todoapp.todo_list.AppDatabase
 import com.romiusse.todoapp.utils.ViewModelFactory
+import com.romiusse.todo_repository.TodoItemsRepository
+import com.romiusse.server_api.transmitter.ServerTransmitter
+import com.romiusse.todo_list.di.ListDeps
+import com.romiusse.todo_repository.room.AppDatabase
+import com.romiusse.todo_repository.room.TodoItemDao
 import dagger.Binds
+import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
@@ -28,19 +25,26 @@ import javax.inject.Singleton
 
 @Singleton
 @Component(modules = [AppDataBaseModule::class, AppItemsRepositoryModule::class,
-    AppBottomUtilsModule::class, AppServerModule::class, ViewModelModule::class ])
-interface AppComponent{
-    fun inject(app: App)
-    fun inject(mainActivity: MainActivity)
-    fun inject(mainScreenFragment: MainScreenFragment)
-    fun inject(addScreenFragment: AddScreenFragment)
+    AppBottomUtilsModule::class, AppServerModule::class])
+interface AppComponent: EditDeps, ListDeps{
+
+    override val bottomSheetUtils: BottomSheetUtils
+    override val serverTransmitter: ServerTransmitter
+    override val todoItemsRepository: TodoItemsRepository
+
+    @Component.Builder
+    interface Builder{
+
+        @BindsInstance
+        fun application(application: Application) : Builder
+
+        fun build() : AppComponent
+
+    }
 }
 
-//TODO fix this                         |
-//                                      |
-//                                      v
 @Module
-class AppDataBaseModule(private val application: Application) {
+class AppDataBaseModule{
 
 
     @Singleton
@@ -51,13 +55,13 @@ class AppDataBaseModule(private val application: Application) {
 
     @Singleton
     @Provides
-    fun provideDataBase(context: Context): AppDatabase {
-        return AppDatabase.buildDatabase(context, App.DATABASE_NAME)
+    fun provideDataBase(application: Application): AppDatabase {
+        return AppDatabase.buildDatabase(application.applicationContext, App.DATABASE_NAME)
     }
 
     @Singleton
     @Provides
-    fun provideContext(): Context {
+    fun provideContext(application: Application): Context {
         return application.applicationContext
     }
 
@@ -99,21 +103,4 @@ class AppServerModule{
         return ApiHelper(RetrofitBuilder.apiService)
     }
 
-}
-
-@Module
-abstract class ViewModelModule {
-
-    @Binds
-    @[IntoMap ViewModelKey(MainScreenViewModel::class)]
-    internal abstract fun bindMainScreenViewModel(mainScreenViewModel: MainScreenViewModel):
-            ViewModel
-
-    @Binds
-    @[IntoMap ViewModelKey(AddScreenViewModel::class)]
-    internal abstract fun bindAddScreenViewModel(addScreenViewModel: AddScreenViewModel):
-            ViewModel
-
-    @Binds
-    internal abstract fun bindViewModelFactory(factory: ViewModelFactory): ViewModelProvider.Factory
 }

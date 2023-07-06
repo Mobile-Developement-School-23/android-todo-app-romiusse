@@ -14,3 +14,9 @@ dependencyResolutionManagement {
 }
 rootProject.name = "ToDoApp"
 include ':app'
+include ':feature:todo_list'
+include ':core:todo_repository'
+include ':feature:edit_todo'
+include ':core:utils'
+include ':core:server_api'
+include ':feature:login'

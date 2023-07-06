@@ -7,20 +7,22 @@
 
     <fragment
         android:id="@+id/mainScreenFragment"
-        android:name="com.romiusse.todoapp.screens.main.MainScreenFragment"
+        android:name="com.romiusse.todo_list.screen.MainScreenFragment"
         android:label="fragment_main_screen"
         tools:layout="@layout/fragment_main_screen" >
+
         <action
-            android:id="@+id/action_mainScreenFragment_to_addScreenFragment"
+            android:id="@id/action_mainScreenFragment_to_addScreenFragment"
             app:destination="@id/addScreenFragment" />
     </fragment>
     <fragment
         android:id="@+id/addScreenFragment"
-        android:name="com.romiusse.todoapp.screens.add.AddScreenFragment"
+        android:name="com.romiusse.edit_todo.screen.AddScreenFragment"
         android:label="fragment_add_screen"
         tools:layout="@layout/fragment_add_screen" >
+
         <action
-            android:id="@+id/action_addScreenFragment_to_mainScreenFragment"
+            android:id="@id/action_addScreenFragment_to_mainScreenFragment"
             app:destination="@id/mainScreenFragment" />
     </fragment>
     <fragment
@@ -29,7 +31,7 @@
         android:label="fragment_login"
         tools:layout="@layout/fragment_login" >
         <action
-            android:id="@+id/action_loginFragment_to_mainScreenFragment"
+            android:id="@id/action_loginFragment_to_mainScreenFragment"
             app:destination="@id/mainScreenFragment" />
     </fragment>
 </navigation>

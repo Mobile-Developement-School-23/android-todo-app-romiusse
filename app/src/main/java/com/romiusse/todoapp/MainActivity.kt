@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
 import androidx.work.PeriodicWorkRequest
-import com.romiusse.todoapp.screens.main.MainScreenViewModel
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
