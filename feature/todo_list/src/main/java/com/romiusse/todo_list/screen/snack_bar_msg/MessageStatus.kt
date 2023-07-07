@@ -6,7 +6,7 @@ package com.romiusse.todo_list.screen.snack_bar_msg
  *
  * @author Romiusse
  */
-enum class MessageStatus {
+internal enum class MessageStatus {
     DATA_WAS_UPDATED,
     CONNECTION_TIME_OUT,
     WRONG_AUTH,

@@ -51,7 +51,7 @@ interface AppComponent: EditDeps, ListDeps{
  * @author Romiusse
  */
 @Module
-class AppDataBaseModule{
+private class AppDataBaseModule{
 
 
     @AppScope
@@ -80,7 +80,7 @@ class AppDataBaseModule{
  * @author Romiusse
  */
 @Module
-class AppItemsRepositoryModule{
+private class AppItemsRepositoryModule{
 
     @AppScope
     @Provides
@@ -96,7 +96,7 @@ class AppItemsRepositoryModule{
  * @author Romiusse
  */
 @Module
-class AppBottomUtilsModule{
+private class AppBottomUtilsModule{
 
     @Provides
     fun provideBottomUtils(): BottomSheetUtils {
@@ -111,7 +111,7 @@ class AppBottomUtilsModule{
  * @author Romiusse
  */
 @Module
-class AppServerModule{
+private class AppServerModule{
 
     @AppScope
     @Provides
@@ -133,4 +133,4 @@ class AppServerModule{
  * @author Romiusse
  */
 @Scope
-annotation class AppScope
+private annotation class AppScope

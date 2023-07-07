@@ -23,7 +23,7 @@ const val WRONG_AUTH        = 401
 const val ELEMENT_NOT_FOUND = 404
 const val SERVER_ERROR      = 500
 
-typealias ServerDataListener = (data: ServerAnswer<List<ServerTodoItem>>) -> Unit
+internal typealias ServerDataListener = (data: ServerAnswer<List<ServerTodoItem>>) -> Unit
 
 /**
  *

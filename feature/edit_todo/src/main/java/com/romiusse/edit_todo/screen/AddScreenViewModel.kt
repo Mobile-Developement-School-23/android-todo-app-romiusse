@@ -28,9 +28,9 @@ internal class AddScreenViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _item = MutableLiveData<TodoItem>()
-    val item: LiveData<TodoItem> = _item
+    internal val item: LiveData<TodoItem> = _item
 
-    var isNew = true
+    internal var isNew = true
 
     private fun createNewItem() = TodoItem(
         id = Date().time.toString(),

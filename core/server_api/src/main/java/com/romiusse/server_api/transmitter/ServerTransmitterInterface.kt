@@ -9,7 +9,7 @@ import com.romiusse.server_api.model.ListWrapper
  * @param apiHelper api helper class
  * @author Romiusse
  */
-interface ServerTransmitterInterface {
+internal interface ServerTransmitterInterface {
 
     var revision: Long
 

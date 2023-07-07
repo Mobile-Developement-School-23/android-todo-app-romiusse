@@ -6,7 +6,7 @@ package com.romiusse.todo_list.screen.snack_bar_msg
  *
  * @author Romiusse
  */
-data class SnackBarMessage(
+internal data class SnackBarMessage(
 
     val status: MessageStatus,
     val prefix: String? = null,

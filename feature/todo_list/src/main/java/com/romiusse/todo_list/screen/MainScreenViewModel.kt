@@ -38,22 +38,22 @@ class MainScreenViewModel constructor(
     ) : ViewModel() {
 
     private val _items = MutableLiveData<List<TodoItem>>()
-    val items: LiveData<List<TodoItem>> = _items
+    internal val items: LiveData<List<TodoItem>> = _items
 
     private val _bottomItems = MutableLiveData<List<TodoItem>>()
-    val bottomItems: LiveData<List<TodoItem>> = _bottomItems
+    internal val bottomItems: LiveData<List<TodoItem>> = _bottomItems
 
     private val _info = MutableLiveData<SnackBarMessage?>()
-    val info: LiveData<SnackBarMessage?> = _info
+    internal val info: LiveData<SnackBarMessage?> = _info
 
     private val _isInternetConnected = MutableLiveData(false)
     val isInternetConnected: LiveData<Boolean> = _isInternetConnected
 
     private val _syncIconStatus = MutableLiveData<SyncIconStatus>()
-    val syncIconStatus: LiveData<SyncIconStatus> = _syncIconStatus
+    internal val syncIconStatus: LiveData<SyncIconStatus> = _syncIconStatus
 
     private val _isBottomSheetShow = MutableLiveData(false)
-    val isBottomSheetShow: LiveData<Boolean> = _isBottomSheetShow
+    internal val isBottomSheetShow: LiveData<Boolean> = _isBottomSheetShow
 
     private var isSynchronized = false
     private var isPreSynchronized = false

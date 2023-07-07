@@ -1,14 +1,9 @@
 package com.romiusse.todoapp
 
 import android.app.Application
-import com.romiusse.edit_todo.di.EditDeps
 import com.romiusse.edit_todo.di.EditDepsStore
 import com.romiusse.todo_list.di.ListDepsStore
-import com.romiusse.todoapp.dagger.AppBottomUtilsModule
 import com.romiusse.todoapp.dagger.AppComponent
-import com.romiusse.todoapp.dagger.AppDataBaseModule
-import com.romiusse.todoapp.dagger.AppItemsRepositoryModule
-import com.romiusse.todoapp.dagger.AppServerModule
 import com.romiusse.todoapp.dagger.DaggerAppComponent
 
 /**

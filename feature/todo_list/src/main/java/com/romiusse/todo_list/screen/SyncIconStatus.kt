@@ -6,7 +6,7 @@ package com.romiusse.todo_list.screen
  *
  * @author Romiusse
  */
-enum class SyncIconStatus {
+internal enum class SyncIconStatus {
     OK,
     SYNCHRONIZING,
     ERROR
