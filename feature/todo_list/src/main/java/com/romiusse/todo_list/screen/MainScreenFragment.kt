@@ -1,5 +1,6 @@
 package com.romiusse.todo_list.screen
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
@@ -32,7 +33,12 @@ import com.romiusse.todo_repository.TodoItem
 import dagger.Lazy
 import javax.inject.Inject
 
-
+/**
+ *
+ * Main screen fragment
+ *
+ * @author Romiusse
+ */
 class MainScreenFragment : Fragment() {
 
     private lateinit var binding: FragmentMainScreenBinding
@@ -124,7 +130,6 @@ class MainScreenFragment : Fragment() {
                     MessageStatus.SERVER_ERROR -> context?.getString(R.string.server_error)
                     MessageStatus.CONNECTION_LOST -> context?.getString(R.string.connection_lost)
                     MessageStatus.RETRYING -> context?.getString(R.string.retrying)
-                    else -> {}
                 }
                 val prefix = it.prefix ?: ""
                 val suffix = it.suffix ?: ""
@@ -187,6 +192,7 @@ class MainScreenFragment : Fragment() {
 
     }
 
+    @SuppressLint("SetTextI18n")
     private fun countCompletedTasks(list: List<TodoItem>){
         binding.completeTitle.text =  (context?.getString(R.string.completed) ?: "") +
                 " " + list.count { it.flag }.toString()

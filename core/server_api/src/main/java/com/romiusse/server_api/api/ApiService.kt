@@ -7,6 +7,13 @@ import retrofit2.http.Header
 import retrofit2.http.Headers
 import retrofit2.http.PATCH
 
+/**
+ * Api interface
+ *
+ * Contains 2 functions get and set
+ *
+ * @author Romiusse
+ */
 interface ApiService {
 
 

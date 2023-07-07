@@ -4,11 +4,18 @@ package com.romiusse.edit_todo.di
 import androidx.lifecycle.ViewModel
 import com.romiusse.edit_todo.screen.AddScreenFragment
 import com.romiusse.todo_repository.TodoItemsRepository
+import com.romiusse.utils.Feature
 import dagger.Component
 import javax.inject.Singleton
 import kotlin.properties.Delegates
 
-@Singleton
+/**
+ *
+ * Component of edit module
+ *
+ * @author Romiusse
+ */
+@Feature
 @Component(dependencies = [EditDeps::class])
 interface EditComponent {
     fun inject(addScreenFragment: AddScreenFragment)
@@ -24,6 +31,12 @@ interface EditComponent {
 
 }
 
+/**
+ *
+ * Dependencies for this module
+ *
+ * @author Romiusse
+ */
 interface EditDeps{
 
     val todoItemsRepository: TodoItemsRepository

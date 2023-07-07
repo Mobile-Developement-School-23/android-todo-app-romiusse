@@ -2,6 +2,11 @@ package com.romiusse.server_api.model
 
 import com.google.gson.annotations.SerializedName
 
+/**
+ * Wrapper for server data
+ *
+ * @author Romiusse
+ */
 data class ListWrapper(
 
     @SerializedName("status"   ) var status: String?         = null,

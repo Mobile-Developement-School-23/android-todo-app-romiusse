@@ -5,6 +5,12 @@ import kotlinx.coroutines.flow.callbackFlow
 
 typealias BottomSheetStateListener = (state: Boolean) -> Unit
 
+/**
+ *
+ * Utils for bottom sheet utils
+ *
+ * @author Romiusse
+ */
 class BottomSheetUtils {
 
     private val bottomSheetStateListeners = mutableSetOf<BottomSheetStateListener>()

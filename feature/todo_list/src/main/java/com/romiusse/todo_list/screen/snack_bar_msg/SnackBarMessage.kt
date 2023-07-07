@@ -1,6 +1,11 @@
 package com.romiusse.todo_list.screen.snack_bar_msg
 
-
+/**
+ *
+ * SnackBarMessage data class
+ *
+ * @author Romiusse
+ */
 data class SnackBarMessage(
 
     val status: MessageStatus,

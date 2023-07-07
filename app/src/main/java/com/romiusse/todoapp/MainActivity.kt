@@ -7,6 +7,13 @@ import androidx.work.PeriodicWorkRequest
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
+/**
+ * Main activity class
+ *
+ * This class do nothing
+ *
+ * @author Romiusse
+ */
 class MainActivity : AppCompatActivity() {
 
 

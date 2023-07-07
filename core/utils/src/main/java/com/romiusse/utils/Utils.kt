@@ -7,12 +7,20 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+/**
+ *
+ * Utils class
+ *
+ * @author Romiusse
+ */
 object Utils {
 
 
     fun convertDateToString(date: Date?): String{
         val sdf = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
-        return sdf.format(date)
+        return if(date != null)
+            sdf.format(date)
+        else ""
     }
 
 

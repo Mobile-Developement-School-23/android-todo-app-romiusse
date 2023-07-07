@@ -17,6 +17,12 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 
+/**
+ *
+ * View model of add screen
+ *
+ * @author Romiusse
+ */
 internal class AddScreenViewModel @Inject constructor(
     val todoItemsRepository: TodoItemsRepository
 ) : ViewModel() {

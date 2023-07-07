@@ -23,6 +23,12 @@ import dagger.Lazy
 import java.util.Date
 import javax.inject.Inject
 
+/**
+ *
+ * Fragment of add screen
+ *
+ * @author Romiusse
+ */
 class AddScreenFragment : Fragment() {
 
     private lateinit var binding: FragmentAddScreenBinding

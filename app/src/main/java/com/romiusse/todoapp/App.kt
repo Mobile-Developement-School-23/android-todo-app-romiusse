@@ -11,6 +11,13 @@ import com.romiusse.todoapp.dagger.AppItemsRepositoryModule
 import com.romiusse.todoapp.dagger.AppServerModule
 import com.romiusse.todoapp.dagger.DaggerAppComponent
 
+/**
+ * This is the start point of the *app*
+ *
+ * Creates appComponent and Feature dependencies
+ *
+ * @author Romiusse
+ */
 class App: Application() {
 
     val appComponent: AppComponent by lazy {

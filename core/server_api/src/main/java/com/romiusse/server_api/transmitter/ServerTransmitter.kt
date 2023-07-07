@@ -25,6 +25,13 @@ const val SERVER_ERROR      = 500
 
 typealias ServerDataListener = (data: ServerAnswer<List<ServerTodoItem>>) -> Unit
 
+/**
+ *
+ * Class that transmit messages between client and server
+ *
+ * @param apiHelper api helper class
+ * @author Romiusse
+ */
 class ServerTransmitter(private val apiHelper: ApiHelper) : ServerTransmitterInterface {
 
     private val serverDataListeners = mutableSetOf<ServerDataListener>()

@@ -2,6 +2,11 @@ package com.romiusse.server_api.model
 
 import com.google.gson.annotations.SerializedName
 
+/**
+ * Server model of to_do item
+ *
+ * @author Romiusse
+ */
 data class ServerTodoItem(
 
     @SerializedName("id"              ) var id            : String,

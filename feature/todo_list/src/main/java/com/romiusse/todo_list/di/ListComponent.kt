@@ -6,11 +6,18 @@ import com.romiusse.server_api.transmitter.ServerTransmitter
 import com.romiusse.todo_list.screen.BottomSheetUtils
 import com.romiusse.todo_list.screen.MainScreenFragment
 import com.romiusse.todo_repository.TodoItemsRepository
+import com.romiusse.utils.Feature
 import dagger.Component
 import javax.inject.Singleton
 import kotlin.properties.Delegates
 
-@Singleton
+/**
+ *
+ * Dagger component of main module
+ *
+ * @author Romiusse
+ */
+@Feature
 @Component(dependencies = [ListDeps::class])
 internal interface ListComponent {
 

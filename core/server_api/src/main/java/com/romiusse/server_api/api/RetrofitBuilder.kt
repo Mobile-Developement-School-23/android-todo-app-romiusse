@@ -5,6 +5,11 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
+/**
+ * Object that create retrofit client
+ *
+ * @author Romiusse
+ */
 object RetrofitBuilder {
 
     private const val BASE_URL = "https://beta.mrdekk.ru"

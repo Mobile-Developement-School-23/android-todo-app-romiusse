@@ -2,28 +2,30 @@ package com.romiusse.todoapp.dagger
 
 import android.app.Application
 import android.content.Context
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import com.romiusse.edit_todo.di.EditDeps
 import com.romiusse.server_api.api.ApiHelper
 import com.romiusse.server_api.api.RetrofitBuilder
 import com.romiusse.todo_list.screen.BottomSheetUtils
 import com.romiusse.todoapp.App
-import com.romiusse.todoapp.utils.ViewModelFactory
 import com.romiusse.todo_repository.TodoItemsRepository
 import com.romiusse.server_api.transmitter.ServerTransmitter
 import com.romiusse.todo_list.di.ListDeps
 import com.romiusse.todo_repository.room.AppDatabase
 import com.romiusse.todo_repository.room.TodoItemDao
-import dagger.Binds
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import dagger.multibindings.IntoMap
-import javax.inject.Singleton
+import javax.inject.Scope
 
-@Singleton
+/**
+ * A root of *modules*.
+ *
+ * This interface is the main root of dagger
+ *
+ * @author Romiusse
+ */
+@AppScope
 @Component(modules = [AppDataBaseModule::class, AppItemsRepositoryModule::class,
     AppBottomUtilsModule::class, AppServerModule::class])
 interface AppComponent: EditDeps, ListDeps{
@@ -43,23 +45,28 @@ interface AppComponent: EditDeps, ListDeps{
     }
 }
 
+/**
+ * This dagger module provides data base classes
+ *
+ * @author Romiusse
+ */
 @Module
 class AppDataBaseModule{
 
 
-    @Singleton
+    @AppScope
     @Provides
     fun provideTodoItemDao(appDatabase: AppDatabase): TodoItemDao {
         return appDatabase.todoItemDao()
     }
 
-    @Singleton
+    @AppScope
     @Provides
     fun provideDataBase(application: Application): AppDatabase {
         return AppDatabase.buildDatabase(application.applicationContext, App.DATABASE_NAME)
     }
 
-    @Singleton
+    @AppScope
     @Provides
     fun provideContext(application: Application): Context {
         return application.applicationContext
@@ -67,10 +74,15 @@ class AppDataBaseModule{
 
 }
 
+/**
+ * This dagger module provides app repository
+ *
+ * @author Romiusse
+ */
 @Module
 class AppItemsRepositoryModule{
 
-    @Singleton
+    @AppScope
     @Provides
     fun provideTodoItemsRepository(todoItemDao: TodoItemDao): TodoItemsRepository {
         return TodoItemsRepository(todoItemDao)
@@ -78,6 +90,11 @@ class AppItemsRepositoryModule{
 
 }
 
+/**
+ * This dagger module provides bottom utils
+ *
+ * @author Romiusse
+ */
 @Module
 class AppBottomUtilsModule{
 
@@ -88,19 +105,32 @@ class AppBottomUtilsModule{
 
 }
 
+/**
+ * This dagger module provides server api classes
+ *
+ * @author Romiusse
+ */
 @Module
 class AppServerModule{
 
-    @Singleton
+    @AppScope
     @Provides
     fun provideServerTransmitter(apiHelper: ApiHelper): ServerTransmitter {
         return ServerTransmitter(apiHelper)
     }
 
-    @Singleton
+    @AppScope
     @Provides
     fun provideApiHelper(): ApiHelper {
         return ApiHelper(RetrofitBuilder.apiService)
     }
 
 }
+
+/**
+ * Custom scope
+ *
+ * @author Romiusse
+ */
+@Scope
+annotation class AppScope

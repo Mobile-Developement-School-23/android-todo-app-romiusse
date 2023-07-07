@@ -25,7 +25,12 @@ import java.util.Date
 import javax.inject.Inject
 import javax.inject.Provider
 
-
+/**
+ *
+ * Main screen view model
+ *
+ * @author Romiusse
+ */
 class MainScreenViewModel constructor(
     private val todoItemsRepository: TodoItemsRepository,
     private val serverTransmitter: ServerTransmitter,

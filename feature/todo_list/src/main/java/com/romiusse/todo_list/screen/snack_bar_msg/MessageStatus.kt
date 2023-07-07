@@ -1,5 +1,11 @@
 package com.romiusse.todo_list.screen.snack_bar_msg
 
+/**
+ *
+ * Enum of messages
+ *
+ * @author Romiusse
+ */
 enum class MessageStatus {
     DATA_WAS_UPDATED,
     CONNECTION_TIME_OUT,
