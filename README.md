@@ -11,7 +11,7 @@
 
 *Инициатива:*
 Структура проетка, чтобы легче его понимать
-[![Структура проетка]()]
+[![Структура проетка](https://github.com/Mobile-Developement-School-23/android-todo-app-romiusse/blob/master/ProjectStructure.png)]
 
 
 
