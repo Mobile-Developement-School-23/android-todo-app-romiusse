@@ -12,6 +12,7 @@ import com.romiusse.server_api.transmitter.ServerTransmitter
 import com.romiusse.todo_list.di.ListDeps
 import com.romiusse.todo_repository.room.AppDatabase
 import com.romiusse.todo_repository.room.TodoItemDao
+import com.romiusse.todoapp.MainActivityWorkManager
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -29,6 +30,7 @@ import javax.inject.Scope
 @Component(modules = [AppDataBaseModule::class, AppItemsRepositoryModule::class,
     AppBottomUtilsModule::class, AppServerModule::class])
 interface AppComponent: EditDeps, ListDeps{
+    fun inject(mainActivityWorkManager: MainActivityWorkManager)
 
     override val bottomSheetUtils: BottomSheetUtils
     override val serverTransmitter: ServerTransmitter
@@ -51,7 +53,7 @@ interface AppComponent: EditDeps, ListDeps{
  * @author Romiusse
  */
 @Module
-private class AppDataBaseModule{
+internal class AppDataBaseModule{
 
 
     @AppScope
@@ -80,7 +82,7 @@ private class AppDataBaseModule{
  * @author Romiusse
  */
 @Module
-private class AppItemsRepositoryModule{
+internal class AppItemsRepositoryModule{
 
     @AppScope
     @Provides
@@ -96,7 +98,7 @@ private class AppItemsRepositoryModule{
  * @author Romiusse
  */
 @Module
-private class AppBottomUtilsModule{
+internal class AppBottomUtilsModule{
 
     @Provides
     fun provideBottomUtils(): BottomSheetUtils {
@@ -111,7 +113,7 @@ private class AppBottomUtilsModule{
  * @author Romiusse
  */
 @Module
-private class AppServerModule{
+internal class AppServerModule{
 
     @AppScope
     @Provides
@@ -133,4 +135,4 @@ private class AppServerModule{
  * @author Romiusse
  */
 @Scope
-private annotation class AppScope
+internal annotation class AppScope

@@ -6,7 +6,6 @@ import com.romiusse.edit_todo.screen.AddScreenFragment
 import com.romiusse.todo_repository.TodoItemsRepository
 import com.romiusse.utils.Feature
 import dagger.Component
-import javax.inject.Singleton
 import kotlin.properties.Delegates
 
 /**

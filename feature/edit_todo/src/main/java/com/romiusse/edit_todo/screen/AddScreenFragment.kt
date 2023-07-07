@@ -11,7 +11,6 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.get
-import androidx.navigation.NavDeepLinkRequest
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.romiusse.edit_todo.R
@@ -78,7 +77,15 @@ class AddScreenFragment : Fragment() {
 
 
         initCalendar()
+        saveButtonOnClickListener()
+        closeButtonOnClickListener()
+        deleteButtonOnClickListener()
+        switchOnclickListener()
+        observeItem()
 
+    }
+
+    private fun saveButtonOnClickListener(){
         binding.saveButton.setOnClickListener {
             if(binding.edittextAdding.text.toString() != "") {
                 if(arguments != null) updateItem()
@@ -87,16 +94,20 @@ class AddScreenFragment : Fragment() {
             }
             else Toast.makeText(context, getString(R.string.null_text), Toast.LENGTH_SHORT).show()
         }
-
+    }
+    private fun closeButtonOnClickListener(){
         binding.closeButton.setOnClickListener {
             close()
         }
-
+    }
+    private fun deleteButtonOnClickListener(){
         binding.deleteButton.setOnClickListener {
             deleteItem()
             close()
         }
+    }
 
+    private fun switchOnclickListener(){
         binding.switchdeadline.setOnClickListener {
             if(binding.switchdeadline.isChecked){
                 materialDatePicker.show(parentFragmentManager, "tag")
@@ -109,7 +120,8 @@ class AddScreenFragment : Fragment() {
                 deadline = null
             }
         }
-
+    }
+    private fun observeItem(){
         viewModel.item.observe(viewLifecycleOwner, Observer {
 
             if(viewModel.isNew) binding.edittextAdding.setText(it.text)
@@ -117,7 +129,6 @@ class AddScreenFragment : Fragment() {
             updateScreen(it)
             viewModel.isNew = false
         })
-
     }
 
     private fun initCalendar() {

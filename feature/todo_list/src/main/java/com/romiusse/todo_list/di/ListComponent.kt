@@ -8,7 +8,6 @@ import com.romiusse.todo_list.screen.MainScreenFragment
 import com.romiusse.todo_repository.TodoItemsRepository
 import com.romiusse.utils.Feature
 import dagger.Component
-import javax.inject.Singleton
 import kotlin.properties.Delegates
 
 /**
