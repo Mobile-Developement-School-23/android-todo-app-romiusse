@@ -121,6 +121,7 @@ class MainScreenViewModel constructor(
         override fun onAvailable(network: Network) {
             super.onAvailable(network)
             if(!_isInternetConnected.value!!)
+                notSynchronized()
                 loadData()
             _isInternetConnected.postValue(true)
         }
