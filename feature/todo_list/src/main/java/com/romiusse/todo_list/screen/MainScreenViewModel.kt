@@ -120,9 +120,10 @@ class MainScreenViewModel constructor(
     val networkCallback = object : ConnectivityManager.NetworkCallback() {
         override fun onAvailable(network: Network) {
             super.onAvailable(network)
-            if(!_isInternetConnected.value!!)
+            if(!_isInternetConnected.value!!) {
                 notSynchronized()
                 loadData()
+            }
             _isInternetConnected.postValue(true)
         }
 
