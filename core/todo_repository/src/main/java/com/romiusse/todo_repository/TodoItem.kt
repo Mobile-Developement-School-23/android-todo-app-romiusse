@@ -4,6 +4,7 @@ package com.romiusse.todo_repository
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.romiusse.todo_repository.TodoItem.Companion.TABLE_NAME
+import java.util.Calendar
 import java.util.Date
 
 
@@ -19,12 +20,18 @@ data class TodoItem(
     var deadline: Date?,
     var createdAt: Date,
     var changedAt: Date,
+    var notifyTime: Date? = null
 ){
     companion object{
         const val TABLE_NAME = "TodoItem"
 
         const val ID = "id"
 
+    }
+
+    override fun equals(other: Any?): Boolean {
+        other as TodoItem
+        return this.id == other.id
     }
 }
 

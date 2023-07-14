@@ -1,25 +1,38 @@
 package com.romiusse.edit_todo.screen
 
+import android.app.AlarmManager
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.os.Message
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.ui.platform.ComposeView
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.get
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.romiusse.edit_todo.R
-import com.romiusse.edit_todo.databinding.FragmentAddScreenBinding
+import com.romiusse.edit_todo.compose.AddScreenCompose
 import com.romiusse.edit_todo.di.EditComponentViewModel
-import com.romiusse.todo_repository.TodoItem
+import com.romiusse.notifications.Notifications
+import com.romiusse.notifications.channelID
+import com.romiusse.notifications.messageExtra
+import com.romiusse.notifications.titleExtra
 import com.romiusse.utils.Utils
 import dagger.Lazy
+import java.util.Calendar
 import java.util.Date
+import java.util.GregorianCalendar
 import javax.inject.Inject
 
 /**
@@ -29,8 +42,6 @@ import javax.inject.Inject
  * @author Romiusse
  */
 class AddScreenFragment : Fragment() {
-
-    private lateinit var binding: FragmentAddScreenBinding
 
     @Inject
     internal lateinit var addScreenViewModelFactory: Lazy<AddScreenViewModel.Factory>
@@ -63,135 +74,167 @@ class AddScreenFragment : Fragment() {
         if(arguments != null)
             arguments.getString("id")?.let { viewModel.loadItem(id = it) }
         else
-            viewModel.loadItem(new = true)
+            viewModel.loadItem()
 
-        binding = FragmentAddScreenBinding.inflate(layoutInflater, container, false)
-        return binding.root
+        return ComposeView(requireContext()).apply {
+            setContent {
+                AddScreenCompose().test(
+                                        closeListener = {closeButtonOnClickListener()},
+                                        saveListener = {saveButtonOnClickListener()},
+                                        deleteListener = {deleteButtonOnClickListener()},
+                                        switchOnclickListener = {switchOnclickListener(it)},
+                                        calendarShowListener = {calendarListener()},
+                                        viewModel = viewModel)
+            }
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
-        if(!viewModel.isNew) viewModel.item.value?.let { updateScreen(it) }
-
-
         initCalendar()
-        saveButtonOnClickListener()
-        closeButtonOnClickListener()
-        deleteButtonOnClickListener()
-        switchOnclickListener()
-        observeItem()
+        createNotificationChannel()
 
+    }
+
+    private fun createNotificationChannel()
+    {
+        val name = "TodoApp"
+        val desc = "Уведомления о дедлайнах"
+        val importance = NotificationManager.IMPORTANCE_DEFAULT
+        val channel = NotificationChannel(channelID, name, importance)
+        channel.description = desc
+        val notificationManager =
+            requireActivity().getSystemService(AppCompatActivity.NOTIFICATION_SERVICE)
+                    as NotificationManager
+        notificationManager.createNotificationChannel(channel)
     }
 
     private fun saveButtonOnClickListener(){
-        binding.saveButton.setOnClickListener {
-            if(binding.edittextAdding.text.toString() != "") {
-                if(arguments != null) updateItem()
-                else createItem()
-                close()
-            }
-            else Toast.makeText(context, getString(R.string.null_text), Toast.LENGTH_SHORT).show()
-        }
-    }
-    private fun closeButtonOnClickListener(){
-        binding.closeButton.setOnClickListener {
+        if(viewModel.item.text != "") {
+            if(arguments != null) updateItem()
+            else createItem()
             close()
         }
+        else Toast.makeText(context, getString(R.string.null_text), Toast.LENGTH_SHORT).show()
+    }
+
+    private fun closeButtonOnClickListener(){
+        close()
     }
     private fun deleteButtonOnClickListener(){
-        binding.deleteButton.setOnClickListener {
-            deleteItem()
-            close()
+        deleteItem()
+        close()
+    }
+
+    private fun switchOnclickListener(isChecked: Boolean){
+        if(isChecked){
+            materialDatePicker.show(parentFragmentManager, "tag")
+            if(deadline == null) deadline = Date()
+            viewModel.dataSetChangedListener.invoke(Utils.convertDateToString(deadline))
+            val cal = Calendar.getInstance()
+            cal.set(0, 0, 0, 0, 0, 0)
+            viewModel.item.notifyTime = cal.time
+        }
+        else{
+            deadline = null
+            viewModel.dataSetChangedListener.invoke("")
         }
     }
 
-    private fun switchOnclickListener(){
-        binding.switchdeadline.setOnClickListener {
-            if(binding.switchdeadline.isChecked){
-                materialDatePicker.show(parentFragmentManager, "tag")
-                if(deadline == null) deadline = Date()
-                binding.textviewCalendardate.visibility = View.VISIBLE
-                binding.textviewCalendardate.text = Utils.convertDateToString(deadline)
-            }
-            else{
-                binding.textviewCalendardate.visibility = View.GONE
-                deadline = null
-            }
-        }
+    private fun calendarListener(){
+        materialDatePicker.show(parentFragmentManager, "tag")
     }
-    private fun observeItem(){
-        viewModel.item.observe(viewLifecycleOwner, Observer {
 
-            if(viewModel.isNew) binding.edittextAdding.setText(it.text)
-            else viewModel.updateText(binding.edittextAdding.text.toString())
-            updateScreen(it)
-            viewModel.isNew = false
-        })
-    }
 
     private fun initCalendar() {
-        binding.textviewCalendardate.setOnClickListener {
-            materialDatePicker.show(parentFragmentManager, "tag")
-        }
         materialDatePicker.addOnPositiveButtonClickListener {
-            binding.textviewCalendardate.visibility = View.VISIBLE
             deadline = Date(it)
-            binding.textviewCalendardate.text = Utils.convertDateToString(deadline)
+            viewModel.dataSetChangedListener.invoke(Utils.convertDateToString(deadline))
         }
 
-    }
-
-    private fun updateScreen(item: TodoItem) {
-        item?.let {
-            binding.spinnerAdding.setSelection(Utils.getPosFromPriority(it.priority))
-            it.deadline?.let{dl ->
-                deadline = dl
-                binding.switchdeadline.isChecked = true
-                binding.textviewCalendardate.visibility = View.VISIBLE
-                binding.textviewCalendardate.text = Utils.convertDateToString(deadline)
-            }
-            binding.edittextAdding.setText(it.text)
-        }
     }
 
     private fun createItem(){
-        val item = TodoItem(
-            id = Date().time.toString(),
-            text = binding.edittextAdding.text.toString(),
-            priority = Utils.convertPosToPriority(binding.spinnerAdding.selectedItemPosition),
-            flag = false,
-            deadline = deadline,
-            createdAt = Date(),
-            changedAt = Date()
-        )
-        viewModel.createItem(item)
+        createNotification()
+        viewModel.createItem()
     }
 
     private fun deleteItem(){
-        viewModel.deleteItem(viewModel.item.value)
+        removeNotification()
+        viewModel.deleteItem()
     }
 
     private fun updateItem(){
-        val item = viewModel.item.value
-        val i = item?.let {
-            TodoItem(
-                id = it.id,
-                text = binding.edittextAdding.text.toString(),
-                priority = Utils.convertPosToPriority(binding.spinnerAdding.selectedItemPosition),
-                flag = it.flag,
-                deadline = deadline,
-                createdAt = it.createdAt,
-                changedAt = Date()
-            )
-        }
-        viewModel.updateItem(i)
+        removeNotification()
+        createNotification()
+        viewModel.updateItem()
     }
 
     private fun close(){
 
         findNavController().navigateUp()
+    }
+
+    private fun createNotification(){
+
+        if(viewModel.item.deadline == null || viewModel.item.notifyTime == null) return
+
+        val cal = Calendar.getInstance()
+        val dateCal = Calendar.getInstance()
+        val timeCal = GregorianCalendar.getInstance()
+
+        dateCal.time = viewModel.item.deadline!!
+        timeCal.time = viewModel.item.notifyTime!!
+
+        cal.set(dateCal.get(Calendar.YEAR), dateCal.get(Calendar.MONTH), dateCal.get(Calendar.DATE),
+            timeCal.get(Calendar.HOUR_OF_DAY), timeCal.get(Calendar.MINUTE), 0)
+
+        val d = cal.time
+
+        scheduleNotification(
+            (viewModel.item.id.toLong() % Int.MAX_VALUE).toInt(),
+            d
+        )
+    }
+
+    private fun removeNotification(){
+        removeScheduleNotification((viewModel.item.id.toLong() % Int.MAX_VALUE).toInt())
+    }
+
+    private fun removeScheduleNotification(code: Int){
+        val alarmManager =
+            requireActivity().getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val intent = Intent(requireContext(), Notifications::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(
+            requireContext(),
+            code,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
+        alarmManager.cancel(pendingIntent)
+    }
+    private fun scheduleNotification(code: Int, notifyTime: Date)
+    {
+        val intent = Intent(requireContext(), Notifications::class.java)
+        intent.putExtra(titleExtra, "Осталось мало времени")
+        intent.putExtra(messageExtra, "Поспешите, уже сегодня закончится срок выполнения вашей задачи")
+
+        val pendingIntent = PendingIntent.getBroadcast(
+            requireContext(),
+            code,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
+
+        val alarmManager =
+            requireActivity().getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val time = notifyTime.time
+        alarmManager.setExactAndAllowWhileIdle(
+            AlarmManager.RTC_WAKEUP,
+            time,
+            pendingIntent
+        )
     }
 
 

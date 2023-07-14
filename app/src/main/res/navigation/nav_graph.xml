@@ -2,7 +2,7 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/nav_graph"
+    android:id="@id/nav_graph"
     app:startDestination="@id/loginFragment">
 
     <fragment
@@ -13,17 +13,31 @@
 
         <action
             android:id="@id/action_mainScreenFragment_to_addScreenFragment"
-            app:destination="@id/addScreenFragment" />
+            app:destination="@id/addScreenFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@id/action_mainScreenFragment_to_settingsScreen"
+            app:destination="@id/settingsScreen" />
     </fragment>
     <fragment
-        android:id="@+id/addScreenFragment"
+        android:id="@id/addScreenFragment"
         android:name="com.romiusse.edit_todo.screen.AddScreenFragment"
         android:label="fragment_add_screen"
         tools:layout="@layout/fragment_add_screen" >
 
         <action
             android:id="@id/action_addScreenFragment_to_mainScreenFragment"
-            app:destination="@id/mainScreenFragment" />
+            app:destination="@id/mainScreenFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <deepLink
+            android:id="@+id/deepLink"
+            app:uri="com.romiusse.todoapp" />
     </fragment>
     <fragment
         android:id="@+id/loginFragment"
@@ -33,5 +47,24 @@
         <action
             android:id="@id/action_loginFragment_to_mainScreenFragment"
             app:destination="@id/mainScreenFragment" />
+        <action
+            android:id="@id/action_loginFragment_to_notificationHelper"
+            app:destination="@id/notificationHelper" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingsScreen"
+        android:name="com.romiusse.settings.SettingsScreen"
+        android:label="SettingsScreen" >
+        <action
+            android:id="@id/action_settingsScreen_to_mainScreenFragment"
+            app:destination="@id/mainScreenFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/notificationHelper"
+        android:name="com.romiusse.notifications.NotificationHelper"
+        android:label="NotificationHelper" >
+        <action
+            android:id="@+id/action_notificationHelper_to_loginFragment"
+            app:destination="@id/loginFragment" />
     </fragment>
 </navigation>

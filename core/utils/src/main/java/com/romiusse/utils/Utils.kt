@@ -23,6 +23,13 @@ object Utils {
         else ""
     }
 
+    fun convertTimeToString(date: Date?): String{
+        val sdf = SimpleDateFormat("HH:mm", Locale.getDefault())
+        return if(date != null)
+            sdf.format(date)
+        else "00:00"
+    }
+
 
     fun convertPosToPriority(positionId: Int): PriorityItem {
         return when(positionId){

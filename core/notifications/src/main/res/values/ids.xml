@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="nav_graph" type="id" />
+    <item name="addScreenFragment" type="id" />
+    <item name="action_loginFragment_to_notificationHelper" type="id" />
+</resources>

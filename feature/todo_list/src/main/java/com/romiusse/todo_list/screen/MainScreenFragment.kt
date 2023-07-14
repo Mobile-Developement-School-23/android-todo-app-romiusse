@@ -16,11 +16,14 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.get
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
+import com.romiusse.notifications.isNotifyPermGranted
+import com.romiusse.notifications.permissionPreferences
 import com.romiusse.todo_list.R
 import com.romiusse.todo_list.adaptors.Adapter
 import com.romiusse.todo_list.adaptors.BottomAdapter
@@ -73,7 +76,9 @@ class MainScreenFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initializeAll()
         startListener()
+
     }
+
 
     private fun initializeAll(){
         initAdapter()
@@ -83,6 +88,15 @@ class MainScreenFragment : Fragment() {
         initBottomSheetDialog()
         initPullToRefresh()
         initSnackBar()
+        initSettingsButton()
+    }
+
+    private fun initSettingsButton() {
+        binding.settings.setOnClickListener {
+            findNavController().navigate(
+                R.id.action_mainScreenFragment_to_settingsScreen
+            )
+        }
     }
 
     private fun startListener(){

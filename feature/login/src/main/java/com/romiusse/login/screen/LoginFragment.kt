@@ -13,10 +13,14 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.romiusse.login.R
 import com.romiusse.login.databinding.FragmentLoginBinding
+import com.romiusse.notifications.NOT_SHOWN
+import com.romiusse.notifications.isNotifyPermGranted
+import com.romiusse.notifications.permissionPreferences
 import com.yandex.authsdk.YandexAuthException
 import com.yandex.authsdk.YandexAuthOptions
 import com.yandex.authsdk.YandexAuthSdk
@@ -34,14 +38,7 @@ class LoginFragment : Fragment() {
 
 
     private lateinit var binding: FragmentLoginBinding
-    lateinit var resultLauncher: ActivityResultLauncher<Intent>
-    lateinit var sdk : YandexAuthSdk
 
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -59,8 +56,17 @@ class LoginFragment : Fragment() {
         binding.login2.setOnClickListener {
             offlineLogin(view)
         }
+
+        requirePermission()
+
     }
 
+    private fun requirePermission() {
+        if(requireContext().getSharedPreferences(permissionPreferences, Context.MODE_PRIVATE).getInt(
+                isNotifyPermGranted, NOT_SHOWN) == NOT_SHOWN)
+            findNavController().navigate(
+                com.romiusse.notifications.R.id.action_loginFragment_to_notificationHelper)
+    }
 
     private fun offlineLogin(view: View){
         val settings = PreferenceManager.getDefaultSharedPreferences(requireContext())
