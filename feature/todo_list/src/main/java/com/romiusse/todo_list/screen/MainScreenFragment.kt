@@ -16,14 +16,13 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.get
-import androidx.navigation.findNavController
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.snackbar.BaseTransientBottomBar.LENGTH_INDEFINITE
 import com.google.android.material.snackbar.Snackbar
-import com.romiusse.notifications.isNotifyPermGranted
-import com.romiusse.notifications.permissionPreferences
 import com.romiusse.todo_list.R
 import com.romiusse.todo_list.adaptors.Adapter
 import com.romiusse.todo_list.adaptors.BottomAdapter
@@ -32,6 +31,8 @@ import com.romiusse.todo_list.di.ListComponentViewModel
 import com.romiusse.todo_list.screen.snack_bar_msg.MessageStatus
 import com.romiusse.todo_repository.TodoItem
 import dagger.Lazy
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -145,7 +146,9 @@ class MainScreenFragment : Fragment() {
                 }
                 val prefix = it.prefix ?: ""
                 val suffix = it.suffix ?: ""
+
                 Snackbar.make(binding.root, "$prefix $text $suffix", Snackbar.LENGTH_LONG).show()
+
             }
         }
     }

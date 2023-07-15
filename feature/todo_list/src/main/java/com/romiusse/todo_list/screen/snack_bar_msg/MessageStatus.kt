@@ -12,5 +12,5 @@ internal enum class MessageStatus {
     WRONG_AUTH,
     SERVER_ERROR,
     CONNECTION_LOST,
-    RETRYING
+    RETRYING,
 }

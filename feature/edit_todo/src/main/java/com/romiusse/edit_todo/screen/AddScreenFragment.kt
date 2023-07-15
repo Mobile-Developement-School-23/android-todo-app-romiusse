@@ -17,13 +17,20 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.get
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.android.material.snackbar.BaseTransientBottomBar
+import com.google.android.material.snackbar.Snackbar
 import com.romiusse.edit_todo.R
 import com.romiusse.edit_todo.compose.AddScreenCompose
 import com.romiusse.edit_todo.di.EditComponentViewModel
 import com.romiusse.utils.Utils
 import dagger.Lazy
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.Calendar
 import java.util.Date
 import java.util.GregorianCalendar
@@ -39,6 +46,8 @@ class AddScreenFragment : Fragment() {
 
     @Inject
     internal lateinit var addScreenViewModelFactory: Lazy<AddScreenViewModel.Factory>
+
+    lateinit var rootView: View
 
     private val viewModel: AddScreenViewModel by viewModels {
         addScreenViewModelFactory.get()
@@ -88,6 +97,7 @@ class AddScreenFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        rootView = view.rootView
         initCalendar()
 
     }
@@ -142,6 +152,27 @@ class AddScreenFragment : Fragment() {
     }
 
     private fun deleteItem(){
+
+        val text =  context?.getString(R.string.element_was_delete).toString()
+
+        val snackBar =
+            Snackbar.make(rootView, text,
+                Snackbar.LENGTH_LONG)
+        val item = viewModel.item
+        snackBar.duration = BaseTransientBottomBar.LENGTH_INDEFINITE
+        snackBar.setAction("ОТМЕНИТЬ") {
+            viewModel.returnItem(item)
+        }
+        snackBar.show()
+
+        CoroutineScope(Dispatchers.Main).launch {
+            for (i in 5 downTo 1) {
+                snackBar.setText( "$text       -=$i=-")
+                delay(1000)
+            }
+            snackBar.dismiss()
+        }
+
         viewModel.deleteItem()
     }
 

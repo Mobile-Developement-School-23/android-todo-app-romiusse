@@ -98,6 +98,16 @@ class AddScreenViewModel @Inject constructor(
         }
     }
 
+    fun returnItem(item: TodoItem){
+        item.changedAt = Date()
+
+        createNotification()
+
+        CoroutineScope(Dispatchers.IO).launch{
+            todoItemsRepository.addToList(item)
+        }
+    }
+
     fun deleteItem(){
 
         removeNotification()
