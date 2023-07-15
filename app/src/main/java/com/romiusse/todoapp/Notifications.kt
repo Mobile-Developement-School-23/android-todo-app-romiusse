@@ -1,6 +1,5 @@
-package com.romiusse.notifications
+package com.romiusse.todoapp
 
-import android.annotation.SuppressLint
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.PendingIntent.getActivity
@@ -8,8 +7,9 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
+import androidx.core.os.bundleOf
 import androidx.navigation.NavDeepLinkBuilder
-import androidx.navigation.Navigation
+import com.romiusse.notifications.R
 
 const val notificationID = "id"
 const val channelID = "ToDoApp"
@@ -19,28 +19,32 @@ const val messageExtra = "messageExtra"
 class Notifications: BroadcastReceiver() {
 
 
-    @SuppressLint("ResourceType")
     override fun onReceive(context: Context, intent: Intent) {
 
-        //val pendingIntent = NavDeepLinkBuilder(context)
-         //   .setGraph()
-         //   .setDestination(R.id.destination)
-         //   .setArguments(bundle)
-        //    .createPendingIntent()
 
+        val pendingIntent = NavDeepLinkBuilder(context)
+            .setComponentName(MainActivity::class.java)
+            .setGraph(com.romiusse.todoapp.R.navigation.nav_graph)
+            .setDestination(R.id.addScreenFragment)
+            .setArguments(bundleOf("id" to intent.getStringExtra("id")))
+            .createPendingIntent()
 
-        //val contentIntent = Intent(context, MainActivity::class.java)
-        //contentIntent.putExtra("id", )
-
-        //val pIntent =
-        //    getActivity(context, 0, contentIntent,
-        //        PendingIntent.FLAG_MUTABLE)
+        val buttonIntent = NavDeepLinkBuilder(context)
+            .setComponentName(MainActivity::class.java)
+            .setGraph(com.romiusse.todoapp.R.navigation.nav_graph)
+            .setDestination(R.id.addScreenFragment)
+            .setArguments(bundleOf("id" to intent.getStringExtra("id"),
+                "delay_day" to "delay_day"))
+            .createPendingIntent()
 
         val notification = NotificationCompat.Builder(context, channelID)
             .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setContentTitle(intent.getStringExtra(titleExtra))
             .setContentText(intent.getStringExtra(messageExtra))
-         //   .setContentIntent(pIntent)
+            .setContentIntent(pendingIntent)
+            .addAction(0,
+                context.getString(com.romiusse.todoapp.R.string.delay_for_day),
+                buttonIntent)
             .build()
 
         val manager = context.getSystemService(Context.NOTIFICATION_SERVICE)

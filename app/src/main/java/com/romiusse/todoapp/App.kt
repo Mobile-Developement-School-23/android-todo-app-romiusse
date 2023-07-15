@@ -1,5 +1,6 @@
 package com.romiusse.todoapp
 
+import android.app.Activity
 import android.app.Application
 import com.romiusse.edit_todo.di.EditDepsStore
 import com.romiusse.todo_list.di.ListDepsStore
@@ -15,19 +16,18 @@ import com.romiusse.todoapp.dagger.DaggerAppComponent
  */
 class App: Application() {
 
-    val appComponent: AppComponent by lazy {
-        DaggerAppComponent.builder()
-            .application(this)
-            .build()
-    }
-
-
+    lateinit var appComponent: AppComponent
     override fun onCreate() {
         super.onCreate()
+
+        appComponent =
+            DaggerAppComponent.builder()
+                .application(this)
+                .build()
+
         ListDepsStore.deps = appComponent
         EditDepsStore.deps = appComponent
     }
-
 
     companion object{
         const val DATABASE_NAME = "todo_database.db"

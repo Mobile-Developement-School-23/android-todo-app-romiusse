@@ -3,6 +3,7 @@ package com.romiusse.todoapp.dagger
 import android.app.Application
 import android.content.Context
 import com.romiusse.edit_todo.di.EditDeps
+import com.romiusse.notifications.NotificationActions
 import com.romiusse.server_api.api.ApiHelper
 import com.romiusse.server_api.api.RetrofitBuilder
 import com.romiusse.todo_list.screen.BottomSheetUtils
@@ -12,7 +13,7 @@ import com.romiusse.server_api.transmitter.ServerTransmitter
 import com.romiusse.todo_list.di.ListDeps
 import com.romiusse.todo_repository.room.AppDatabase
 import com.romiusse.todo_repository.room.TodoItemDao
-import com.romiusse.todoapp.MainActivityWorkManager
+import com.romiusse.todoapp.Notifications
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -28,13 +29,13 @@ import javax.inject.Scope
  */
 @AppScope
 @Component(modules = [AppDataBaseModule::class, AppItemsRepositoryModule::class,
-    AppBottomUtilsModule::class, AppServerModule::class])
+    AppBottomUtilsModule::class, AppServerModule::class, NotifyModule::class])
 interface AppComponent: EditDeps, ListDeps{
-    fun inject(mainActivityWorkManager: MainActivityWorkManager)
 
     override val bottomSheetUtils: BottomSheetUtils
     override val serverTransmitter: ServerTransmitter
     override val todoItemsRepository: TodoItemsRepository
+    override val notificationActions: NotificationActions
 
     @Component.Builder
     interface Builder{
@@ -125,6 +126,18 @@ internal class AppServerModule{
     @Provides
     fun provideApiHelper(): ApiHelper {
         return ApiHelper(RetrofitBuilder.apiService)
+    }
+
+}
+
+@Module
+internal class NotifyModule{
+
+    @AppScope
+    @Provides
+    fun provideNotificationActions(application: Application): NotificationActions {
+        return NotificationActions(application.applicationContext,
+            Notifications::class.java)
     }
 
 }

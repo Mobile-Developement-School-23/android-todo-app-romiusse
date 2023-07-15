@@ -1,8 +1,10 @@
 package com.romiusse.edit_todo.di
 
 
+import android.content.Intent
 import androidx.lifecycle.ViewModel
 import com.romiusse.edit_todo.screen.AddScreenFragment
+import com.romiusse.notifications.NotificationActions
 import com.romiusse.todo_repository.TodoItemsRepository
 import com.romiusse.utils.Feature
 import dagger.Component
@@ -39,6 +41,7 @@ interface EditComponent {
 interface EditDeps{
 
     val todoItemsRepository: TodoItemsRepository
+    val notificationActions: NotificationActions
 
 }
 
