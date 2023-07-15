@@ -6,6 +6,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.tooling.preview.Preview
 
 private val LightColors = lightColorScheme(
     primary = label_primary,
@@ -20,12 +21,12 @@ private val DarkColors = darkColorScheme(
     surface = dark_back_primary
 )
 
-
+@Preview
 @Composable
 fun AppTheme(
-    type: Int,
+    type: Int? = 0,
     useDarkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable() () -> Unit
+    content: @Composable() () -> Unit = {}
 ) {
 
     val colors = when(type){

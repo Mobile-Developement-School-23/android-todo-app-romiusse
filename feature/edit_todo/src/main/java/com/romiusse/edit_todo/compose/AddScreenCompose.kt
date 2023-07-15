@@ -71,12 +71,45 @@ import kotlinx.coroutines.launch
 import java.util.Calendar
 
 
-class AddScreenCompose(val requireContext: Context) {
 
-    @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
+@Preview()
+@Composable
+fun PrevTest(){
+    AppTheme(0){
+        AddScreenCompose(null).Layout(null, { }, { }, { }, { }, { })
+    }
+
+}
+
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
+@Composable
+fun PrevTestDark(){
+    AppTheme(0){
+        AddScreenCompose(null).Layout(null, { }, { }, { }, { }, { })
+    }
+
+}
+
+@Preview()
+@Composable
+fun PrevTestBottomSheet(){
+    val priorityItems = stringArrayResource(id = R.array.priority).toList()
+    var selectedText = remember { mutableStateOf(priorityItems[0]) }
+    var openBottomSheet = rememberSaveable { mutableStateOf(true) }
+    AppTheme(0){
+        AddScreenCompose(null).BottomSheet(null,
+            selectedText,
+            priorityItems,
+            openBottomSheet)
+    }
+
+}
+
+class AddScreenCompose(val requireContext: Context?) {
+
     @Composable
     fun test(
-        viewModel: AddScreenViewModel?,
+        viewModel: AddScreenViewModel? = null,
         deleteListener: () -> Unit = {},
         saveListener: () -> Unit = {},
         closeListener: () -> Unit = {},
@@ -85,8 +118,8 @@ class AddScreenCompose(val requireContext: Context) {
     ){
 
         val sharedPreference =
-            requireContext.getSharedPreferences("themeStyle", Context.MODE_PRIVATE)
-        val type = sharedPreference.getInt("selectedTheme", 0)
+            requireContext?.getSharedPreferences("themeStyle", Context.MODE_PRIVATE)
+        val type = sharedPreference?.getInt("selectedTheme", 0)
 
         AppTheme(type){
 
@@ -108,8 +141,6 @@ class AddScreenCompose(val requireContext: Context) {
                calendarShowListener: () -> Unit) {
 
         var scrollState = rememberScrollState()
-
-        val scaffoldState = rememberBottomSheetScaffoldState()
 
         var elevation: Dp = min(16.dp, (scrollState.value * 0.3).toInt().dp)
 
