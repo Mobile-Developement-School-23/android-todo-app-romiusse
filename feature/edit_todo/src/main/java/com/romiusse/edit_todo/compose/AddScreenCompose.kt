@@ -37,7 +37,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -75,7 +74,7 @@ import java.util.Calendar
 @Preview()
 @Composable
 fun PrevTest(){
-    AppTheme(0){
+    com.romiusse.composetheme.AppTheme(0) {
         AddScreenCompose(null).Layout(null, { }, { }, { }, { }, { })
     }
 
@@ -84,7 +83,7 @@ fun PrevTest(){
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
 @Composable
 fun PrevTestDark(){
-    AppTheme(0){
+    com.romiusse.composetheme.AppTheme(0) {
         AddScreenCompose(null).Layout(null, { }, { }, { }, { }, { })
     }
 
@@ -96,11 +95,13 @@ fun PrevTestBottomSheet(){
     val priorityItems = stringArrayResource(id = R.array.priority).toList()
     var selectedText = remember { mutableStateOf(priorityItems[0]) }
     var openBottomSheet = rememberSaveable { mutableStateOf(true) }
-    AppTheme(0){
-        AddScreenCompose(null).BottomSheet(null,
+    com.romiusse.composetheme.AppTheme(0) {
+        AddScreenCompose(null).BottomSheet(
+            null,
             selectedText,
             priorityItems,
-            openBottomSheet)
+            openBottomSheet
+        )
     }
 
 }
@@ -121,10 +122,12 @@ class AddScreenCompose(val requireContext: Context?) {
             requireContext?.getSharedPreferences("themeStyle", Context.MODE_PRIVATE)
         val type = sharedPreference?.getInt("selectedTheme", 0)
 
-        AppTheme(type){
+        com.romiusse.composetheme.AppTheme(type) {
 
-            Layout(viewModel, deleteListener, saveListener, closeListener, switchOnclickListener,
-                calendarShowListener)
+            Layout(
+                viewModel, deleteListener, saveListener, closeListener, switchOnclickListener,
+                calendarShowListener
+            )
         }
 
     }
@@ -443,6 +446,7 @@ class AddScreenCompose(val requireContext: Context?) {
         }
     }
 
+    @SuppressLint("SuspiciousIndentation")
     @Composable
     fun Deadline(viewModel: AddScreenViewModel?, switchOnclickListener: (Boolean) -> Unit,
                  calendarShowListener: () -> Unit){

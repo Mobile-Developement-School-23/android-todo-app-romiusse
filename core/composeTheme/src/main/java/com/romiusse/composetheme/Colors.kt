@@ -1,4 +1,4 @@
-package com.romiusse.edit_todo.compose
+package com.romiusse.composetheme
 
 import androidx.compose.ui.graphics.Color
 

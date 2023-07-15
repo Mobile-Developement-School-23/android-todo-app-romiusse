@@ -1,6 +1,5 @@
-package com.romiusse.edit_todo.compose
+package com.romiusse.composetheme
 
-import android.content.Context
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
