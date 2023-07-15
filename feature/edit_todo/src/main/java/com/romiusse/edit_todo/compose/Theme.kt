@@ -1,5 +1,6 @@
 package com.romiusse.edit_todo.compose
 
+import android.content.Context
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
@@ -22,13 +23,16 @@ private val DarkColors = darkColorScheme(
 
 @Composable
 fun AppTheme(
+    type: Int,
     useDarkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable() () -> Unit
 ) {
-    val colors = if (!useDarkTheme) {
-        LightColors
-    } else {
-        DarkColors
+
+    val colors = when(type){
+        0 -> if (!useDarkTheme) LightColors else DarkColors
+        1 -> LightColors
+        2 -> DarkColors
+        else -> if (!useDarkTheme) LightColors else DarkColors
     }
 
     MaterialTheme(

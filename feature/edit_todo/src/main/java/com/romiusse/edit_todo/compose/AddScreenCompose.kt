@@ -4,11 +4,10 @@ package com.romiusse.edit_todo.compose
 
 import android.annotation.SuppressLint
 import android.app.TimePickerDialog
+import android.content.Context
 import android.content.res.Configuration
 import androidx.compose.animation.Animatable
-import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
@@ -23,7 +22,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.BottomSheetScaffoldState
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
@@ -73,7 +71,7 @@ import kotlinx.coroutines.launch
 import java.util.Calendar
 
 
-class AddScreenCompose {
+class AddScreenCompose(val requireContext: Context) {
 
     @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
     @Composable
@@ -86,7 +84,11 @@ class AddScreenCompose {
         calendarShowListener: () -> Unit = {}
     ){
 
-        AppTheme(){
+        val sharedPreference =
+            requireContext.getSharedPreferences("themeStyle", Context.MODE_PRIVATE)
+        val type = sharedPreference.getInt("selectedTheme", 0)
+
+        AppTheme(type){
 
             Layout(viewModel, deleteListener, saveListener, closeListener, switchOnclickListener,
                 calendarShowListener)

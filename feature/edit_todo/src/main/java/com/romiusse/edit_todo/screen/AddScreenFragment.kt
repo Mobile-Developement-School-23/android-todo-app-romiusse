@@ -1,23 +1,16 @@
 package com.romiusse.edit_todo.screen
 
-import android.app.AlarmManager
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.get
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.snackbar.BaseTransientBottomBar
@@ -33,7 +26,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.Calendar
 import java.util.Date
-import java.util.GregorianCalendar
 import javax.inject.Inject
 
 /**
@@ -83,7 +75,7 @@ class AddScreenFragment : Fragment() {
 
         return ComposeView(requireContext()).apply {
             setContent {
-                AddScreenCompose().test(
+                AddScreenCompose(requireContext()).test(
                                         closeListener = {closeButtonOnClickListener()},
                                         saveListener = {saveButtonOnClickListener()},
                                         deleteListener = {deleteButtonOnClickListener()},

@@ -27,6 +27,7 @@ class App: Application() {
 
         ListDepsStore.deps = appComponent
         EditDepsStore.deps = appComponent
+
     }
 
     companion object{
